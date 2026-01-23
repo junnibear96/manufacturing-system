@@ -1,0 +1,320 @@
+@charset "utf-8";
+
+/* Main Visual */
+.main-tit {
+    text-align: center;
+    padding: 170px 0 100px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.main-tit h3 {
+    font-size: 60px;
+    line-height: 1.3;
+}
+
+.main-tit p {
+    color: #5cb3e6;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* Swiper Slider */
+.index .swiper-container-wrapper--timeline {
+    height: 100vh;
+}
+
+.index .swiper-container-wrapper--timeline .swiper-slide .title {
+    position: relative;
+    z-index: 10;
+    color: #fff;
+    padding: 0 10%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.index .swiper-container-wrapper--timeline .swiper-slide .title h2 {
+    font-size: 70px;
+    line-height: 1.3;
+    margin: 60px 0 20px;
+}
+
+.index .swiper-container-wrapper--timeline .swiper-slide .title p {
+    font-size: 24px;
+    font-weight: 300;
+}
+
+.index .swiper-container-wrapper--timeline .swiper-slide .image {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: #000;
+}
+
+.index .swiper-container-wrapper--timeline .swiper-slide .image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.7;
+}
+
+/* Timeline Progress */
+.swiper-timeline {
+    position: fixed;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 100;
+}
+
+.swiper-timeline-progress {
+    width: 2px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.3);
+    position: relative;
+}
+
+.swiper-timeline-progress span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: #fff;
+    transition: height 0.5s;
+}
+
+.swiper-pagination--timeline {
+    position: fixed;
+    right: 7%;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.swiper-pagination--timeline .swiper-pagination-bullet {
+    width: auto;
+    height: auto;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    opacity: 1;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.swiper-pagination--timeline .swiper-pagination-bullet-active {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Global Section */
+.index .sec03 {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+}
+
+.index .sec03>a {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 50px;
+}
+
+.index .sec03 .global-tit {
+    font-size: 60px;
+    color: #003866;
+    font-weight: 700;
+    text-align: center;
+}
+
+.index .sec03 .circle {
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 50px auto;
+}
+
+.index .sec03 .circle .image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ESG Section */
+.index .sec04 {
+    padding: 150px 50px;
+    background: #fff;
+}
+
+.index .sec04 .sec-tit {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.index .sec04 .sec-tit h3 {
+    font-size: 48px;
+    text-align: center;
+    margin-bottom: 80px;
+    line-height: 1.5;
+}
+
+.index .sec04 .sec-box {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.index .sec04 .sec-box ul {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.index .sec04 .sec-box ul li {
+    flex: 1;
+    min-width: 300px;
+    max-width: 400px;
+}
+
+.index .sec04 .sec-box ul li a {
+    display: block;
+    text-align: center;
+    padding: 50px 30px;
+    border-radius: 20px;
+    background: #f9f9f9;
+    transition: all 0.3s;
+}
+
+.index .sec04 .sec-box ul li a:hover {
+    background: #5cb3e6;
+    color: #fff;
+    transform: translateY(-10px);
+}
+
+.index .sec04 .sec-box .img img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+}
+
+.index .sec04 .sec-box .tit h4 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.index .sec04 .sec-box .tit p {
+    font-size: 18px;
+    color: #666;
+}
+
+/* Responsive Breakpoints */
+/* Large Desktop (1600px+) - Better spacing for ultra-wide screens */
+@media screen and (min-width: 1600px) {
+    .index .swiper-container-wrapper--timeline .swiper-slide .title h2 {
+        font-size: 80px;
+    }
+
+    .index .swiper-container-wrapper--timeline .swiper-slide .title p {
+        font-size: 28px;
+    }
+
+    .main-tit h3 {
+        font-size: 70px;
+    }
+
+    .index .sec04 .sec-tit h3 {
+        font-size: 56px;
+    }
+}
+
+/* Standard Desktop (1280px - 1600px) */
+@media screen and (max-width: 1280px) {
+    .index .swiper-container-wrapper--timeline .swiper-slide .title h2 {
+        font-size: 50px;
+    }
+
+    .main-tit h3 {
+        font-size: 40px;
+    }
+
+    .index .sec03 .global-tit {
+        font-size: 40px;
+    }
+}
+
+/* Tablet (769px - 969px) */
+@media screen and (max-width: 969px) {
+    .main-tit {
+        padding: 80px 20px 50px;
+    }
+
+    .main-tit h3 {
+        font-size: 28px;
+    }
+
+    .index .swiper-container-wrapper--timeline .swiper-slide .title {
+        padding: 0 5%;
+    }
+
+    .index .swiper-container-wrapper--timeline .swiper-slide .title h2 {
+        font-size: 36px;
+        margin: 30px 0 10px;
+    }
+
+    .index .swiper-container-wrapper--timeline .swiper-slide .title p {
+        font-size: 16px;
+    }
+
+    .index .sec03 {
+        padding: 0 20px;
+    }
+
+    .index .sec03 .global-tit {
+        font-size: 24px;
+    }
+
+    .index .sec03 .circle {
+        width: 300px;
+        height: 300px;
+    }
+
+    .index .sec04 {
+        padding: 80px 20px;
+    }
+
+    .index .sec04 .sec-tit h3 {
+        font-size: 28px;
+        margin-bottom: 40px;
+    }
+
+    .index .sec04 .sec-box ul {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Mobile (< 769px) */
+@media screen and (max-width: 768px) {
+    .index .swiper-container-wrapper--timeline .swiper-slide .title h2 {
+        font-size: 32px;
+    }
+
+    .index .swiper-container-wrapper--timeline .swiper-slide .title p {
+        font-size: 14px;
+    }
+
+    .index .sec04 .sec-box ul li {
+        min-width: 100%;
+    }
+}

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.tp.mes.app.hr.mapper.EmployeeMapper">
+
+    <!-- Employee Result Map -->
+    <resultMap id="EmployeeResultMap" type="com.tp.mes.app.hr.model.Employee">
+        <id property="empId" column="emp_id"/>
+        <result property="empName" column="emp_name"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="hireDate" column="hire_date"/>
+        <result property="birthDate" column="birth_date"/>
+        <result property="gender" column="gender"/>
+        <result property="departmentId" column="department_id"/>
+        <result property="positionId" column="position_id"/>
+        <result property="jobType" column="job_type"/>
+        <result property="managerEmpId" column="manager_emp_id"/>
+        <result property="status" column="status"/>
+        <result property="leaveStartDate" column="leave_start_date"/>
+        <result property="leaveEndDate" column="leave_end_date"/>
+        <result property="terminationDate" column="termination_date"/>
+        <result property="terminationReason" column="termination_reason"/>
+        <result property="shiftType" column="shift_type"/>
+        <result property="factoryId" column="factory_id"/>
+        <result property="productionLineId" column="production_line_id"/>
+        <result property="skillLevel" column="skill_level"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- EmployeeListItem Result Map -->
+    <resultMap id="EmployeeListItemResultMap" type="com.tp.mes.app.hr.model.EmployeeListItem">
+        <result property="empId" column="emp_id"/>
+        <result property="empName" column="emp_name"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="hireDate" column="hire_date"/>
+        <result property="departmentId" column="department_id"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="positionId" column="position_id"/>
+        <result property="positionName" column="position_name"/>
+        <result property="status" column="status"/>
+        <result property="jobType" column="job_type"/>
+    </resultMap>
+
+    <!-- 모든 사원 조회 (부서명, 직급명 포함) -->
+    <select id="findAllWithDeptAndPosition" resultMap="EmployeeListItemResultMap">
+        SELECT e.emp_id, e.emp_name, e.email, e.phone,
+               TO_CHAR(e.hire_date, 'YYYY-MM-DD') as hire_date,
+               e.department_id, d.dept_name,
+               e.position_id, p.position_name,
+               e.status, e.job_type
+        FROM employees e
+        LEFT JOIN departments d ON e.department_id = d.department_id
+        LEFT JOIN positions p ON e.position_id = p.position_id
+        ORDER BY e.created_at DESC
+    </select>
+
+    <!-- 부서별 사원 조회 -->
+    <select id="findByDepartment" parameterType="string" resultMap="EmployeeListItemResultMap">
+        SELECT e.emp_id, e.emp_name, e.email, e.phone,
+               TO_CHAR(e.hire_date, 'YYYY-MM-DD') as hire_date,
+               e.department_id, d.dept_name,
+               e.position_id, p.position_name,
+               e.status, e.job_type
+        FROM employees e
+        LEFT JOIN departments d ON e.department_id = d.department_id
+        LEFT JOIN positions p ON e.position_id = p.position_id
+        WHERE e.department_id = #{departmentId}
+        ORDER BY e.created_at DESC
+    </select>
+
+    <!-- 상태별 사원 조회 -->
+    <select id="findByStatus" parameterType="string" resultMap="EmployeeListItemResultMap">
+        SELECT e.emp_id, e.emp_name, e.email, e.phone,
+               TO_CHAR(e.hire_date, 'YYYY-MM-DD') as hire_date,
+               e.department_id, d.dept_name,
+               e.position_id, p.position_name,
+               e.status, e.job_type
+        FROM employees e
+        LEFT JOIN departments d ON e.department_id = d.department_id
+        LEFT JOIN positions p ON e.position_id = p.position_id
+        WHERE e.status = #{status}
+        ORDER BY e.created_at DESC
+    </select>
+
+    <!-- ID로 사원 조회 -->
+    <select id="findById" parameterType="string" resultMap="EmployeeResultMap">
+        SELECT * FROM employees e WHERE emp_id = #{empId}
+    </select>
+
+    <!-- 사원 등록 -->
+    <insert id="insert" parameterType="com.tp.mes.app.hr.model.Employee">
+        INSERT INTO employees(
+            emp_id, emp_name, email, phone, hire_date, birth_date, gender,
+            department_id, position_id, job_type, manager_emp_id, status,
+            shift_type, factory_id, production_line_id, skill_level, password
+        ) VALUES (
+            #{empId}, #{empName}, #{email, jdbcType=VARCHAR}, #{phone, jdbcType=VARCHAR}, 
+            #{hireDate, jdbcType=DATE}, #{birthDate, jdbcType=DATE}, #{gender, jdbcType=CHAR},
+            #{departmentId}, #{positionId}, #{jobType}, #{managerEmpId, jdbcType=VARCHAR}, #{status},
+            #{shiftType, jdbcType=VARCHAR}, #{factoryId, jdbcType=VARCHAR}, 
+            #{productionLineId, jdbcType=VARCHAR}, #{skillLevel, jdbcType=INTEGER},
+            '$2a$10$5PwHqG/TomigDFdLktj5ueuCXtwKDM031eRB53MPVRMQ43bTP8Tyu'
+        )
+    </insert>
+
+    <!-- 사원 정보 수정 -->
+    <update id="update" parameterType="com.tp.mes.app.hr.model.Employee">
+        UPDATE employees SET
+            emp_name = #{empName},
+            email = #{email, jdbcType=VARCHAR},
+            phone = #{phone, jdbcType=VARCHAR},
+            department_id = #{departmentId},
+            position_id = #{positionId},
+            job_type = #{jobType},
+            manager_emp_id = #{managerEmpId, jdbcType=VARCHAR},
+            status = #{status},
+            shift_type = #{shiftType, jdbcType=VARCHAR},
+            factory_id = #{factoryId, jdbcType=VARCHAR},
+            production_line_id = #{productionLineId, jdbcType=VARCHAR},
+            skill_level = #{skillLevel, jdbcType=INTEGER},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE emp_id = #{empId}
+    </update>
+
+    <!-- 사원 상태 변경 -->
+    <update id="updateStatus">
+        UPDATE employees SET status = #{status}, updated_at = CURRENT_TIMESTAMP
+        WHERE emp_id = #{empId}
+    </update>
+
+</mapper>

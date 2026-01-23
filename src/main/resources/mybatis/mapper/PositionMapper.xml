@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.tp.mes.app.hr.mapper.PositionMapper">
+
+    <!-- Result Map -->
+    <resultMap id="PositionResultMap" type="com.tp.mes.app.hr.model.Position">
+        <id property="positionId" column="position_id"/>
+        <result property="positionName" column="position_name"/>
+        <result property="positionNameEn" column="position_name_en"/>
+        <result property="level" column="LEVEL_NO"/>
+        <result property="jobCategory" column="job_category"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <!-- 모든 직급 조회 -->
+    <select id="findAll" resultMap="PositionResultMap">
+        SELECT position_id, position_name, position_name_en, LEVEL_NO,
+               job_category, created_at
+        FROM positions
+        ORDER BY LEVEL_NO DESC, position_id
+    </select>
+
+    <!-- 직무 카테고리별 직급 조회 -->
+    <select id="findByJobCategory" parameterType="string" resultMap="PositionResultMap">
+        SELECT position_id, position_name, position_name_en, LEVEL_NO,
+               job_category, created_at
+        FROM positions
+        WHERE job_category = #{jobCategory}
+        ORDER BY LEVEL_NO DESC
+    </select>
+
+    <!-- ID로 직급 조회 -->
+    <select id="findById" parameterType="string" resultMap="PositionResultMap">
+        SELECT position_id, position_name, position_name_en, LEVEL_NO,
+               job_category, created_at
+        FROM positions
+        WHERE position_id = #{positionId}
+    </select>
+
+</mapper>

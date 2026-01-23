@@ -1,0 +1,6 @@
+# Railway Build
+nixpacks.toml
+.nixpacks/
+
+# Railway local
+.railway/

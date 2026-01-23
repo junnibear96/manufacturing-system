@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.tp.mes.app.hr.mapper.EmployeeRoleMapper">
+
+    <!-- 사원의 모든 권한 조회 -->
+    <select id="findRolesByEmployeeId" parameterType="string" resultType="string">
+        SELECT role_id FROM employee_roles
+        WHERE emp_id = #{empId}
+        ORDER BY role_id
+    </select>
+
+    <!-- 사원-권한 매핑 등록 -->
+    <insert id="insert">
+        INSERT INTO employee_roles(emp_id, role_id, granted_at, granted_by)
+        VALUES (#{empId}, #{role}, CURRENT_TIMESTAMP, #{assignedBy})
+    </insert>
+
+    <!-- 사원의 모든 권한 삭제 -->
+    <delete id="deleteByEmployeeId" parameterType="string">
+        DELETE FROM employee_roles WHERE emp_id = #{empId}
+    </delete>
+
+</mapper>

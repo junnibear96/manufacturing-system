@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.tp.mes.app.hr.mapper.DepartmentMapper">
+
+    <!-- Result Map -->
+    <resultMap id="DepartmentResultMap" type="com.tp.mes.app.hr.model.Department">
+        <id property="departmentId" column="department_id"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="deptNameEn" column="dept_name_en"/>
+        <result property="division" column="division"/>
+        <result property="managerEmpId" column="manager_emp_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 모든 부서 조회 -->
+    <select id="findAll" resultMap="DepartmentResultMap">
+        SELECT department_id, dept_name, dept_name_en, division, 
+               manager_emp_id, created_at, updated_at
+        FROM departments
+        ORDER BY department_id
+    </select>
+
+    <!-- 사업부별 부서 조회 -->
+    <select id="findByDivision" parameterType="string" resultMap="DepartmentResultMap">
+        SELECT department_id, dept_name, dept_name_en, division,
+               manager_emp_id, created_at, updated_at
+        FROM departments
+        WHERE division = #{division}
+        ORDER BY department_id
+    </select>
+
+    <!-- ID로 부서 조회 -->
+    <select id="findById" parameterType="string" resultMap="DepartmentResultMap">
+        SELECT department_id, dept_name, dept_name_en, division,
+               manager_emp_id, created_at, updated_at
+        FROM departments
+        WHERE department_id = #{departmentId}
+    </select>
+
+</mapper>

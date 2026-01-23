@@ -1,0 +1,20 @@
+package com.tp.mes.mvc.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/mvc")
+public class LegacyMvcRedirectController {
+
+  @GetMapping("/company")
+  public String company() {
+    return "redirect:/companies"; // Assuming companies is the list
+  }
+
+  @GetMapping("/portfolio")
+  public String portfolio() {
+    return "redirect:/portfolio";
+  }
+}

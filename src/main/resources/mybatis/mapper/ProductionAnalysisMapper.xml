@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tp.mes.app.prod.mapper.ProductionAnalysisMapper">
+    
+    <!-- 계획 달성률 분석 -->
+    <select id="analyzePlanAchievement" resultType="com.tp.mes.app.prod.model.PlanAchievementReport">
+        SELECT 
+            p.plan_id AS planId,
+            p.plan_date AS planDate,
+            p.item_code AS itemCode,
+            pl.line_name AS lineName,
+            NVL(p.target_quantity, TRUNC(p.qty_plan)) AS targetQuantity,
+            p.assigned_worker_count AS assignedWorkerCount,
+            NVL(SUM(r.qty_good), 0) AS actualQuantity,
+            NVL(SUM(r.qty_ng), 0) AS totalDefects,
+            ROUND(
+                NVL(SUM(r.qty_good), 0) * 100.0 / NULLIF(NVL(p.target_quantity, TRUNC(p.qty_plan)), 0),
+                2
+            ) AS achievementRate,
+            ROUND(
+                NVL(SUM(r.qty_ng), 0) * 100.0 / NULLIF(NVL(SUM(r.qty_good + r.qty_ng), 0), 0),
+                2
+            ) AS defectRate,
+            CASE 
+                WHEN NVL(SUM(r.qty_good), 0) >= NVL(p.target_quantity, TRUNC(p.qty_plan)) * 1.1 THEN 'EXCEEDED'
+                WHEN NVL(SUM(r.qty_good), 0) >= NVL(p.target_quantity, TRUNC(p.qty_plan)) * 0.9 THEN 'ACHIEVED'
+                WHEN NVL(SUM(r.qty_good), 0) >= NVL(p.target_quantity, TRUNC(p.qty_plan)) * 0.7 THEN 'UNDERPERFORMED'
+                ELSE 'CRITICAL'
+            END AS performanceStatus
+        FROM tp_prod_plan p
+        LEFT JOIN tp_prod_result r ON p.plan_id = r.plan_id
+        LEFT JOIN production_lines pl ON p.line_id = pl.line_id
+        WHERE p.plan_id = #{planId}
+        GROUP BY p.plan_id, p.plan_date, p.item_code, pl.line_name, 
+                 p.target_quantity, p.qty_plan, p.assigned_worker_count
+    </select>
+    
+    <!-- 일별 달성률 -->
+    <select id="getDailyAchievementRate" resultType="com.tp.mes.app.prod.model.DailyAchievementDto">
+        SELECT 
+            p.plan_date AS workDate,
+            p.line_id AS lineId,
+            pl.line_name AS lineName,
+            SUM(NVL(p.target_quantity, TRUNC(p.qty_plan))) AS totalTarget,
+            SUM(NVL(r.actual_qty, 0)) AS totalActual,
+            ROUND(
+                SUM(NVL(r.actual_qty, 0)) * 100.0 / NULLIF(SUM(NVL(p.target_quantity, TRUNC(p.qty_plan))), 0),
+                2
+            ) AS achievementRate,
+            COUNT(p.plan_id) AS planCount,
+            SUM(CASE WHEN p.status = 'COMPLETED' THEN 1 ELSE 0 END) AS completedPlanCount
+        FROM tp_prod_plan p
+        LEFT JOIN production_lines pl ON p.line_id = pl.line_id
+        LEFT JOIN (
+            SELECT plan_id, SUM(qty_good) AS actual_qty
+            FROM tp_prod_result
+            GROUP BY plan_id
+        ) r ON p.plan_id = r.plan_id
+        WHERE p.plan_date BETWEEN #{startDate} AND #{endDate}
+        GROUP BY p.plan_date, p.line_id, pl.line_name
+        ORDER BY p.plan_date DESC, p.line_id
+    </select>
+    
+    <!-- 라인별 불량률 -->
+    <select id="getDefectRateByLine" resultType="com.tp.mes.app.prod.model.DefectRateDto">
+        SELECT 
+            r.work_date AS workDate,
+            r.line_id AS lineId,
+            pl.line_name AS lineName,
+            r.item_code AS itemCode,
+            SUM(r.qty_good) AS totalGood,
+            SUM(r.qty_ng) AS totalDefect,
+            ROUND(
+                SUM(r.qty_ng) * 100.0 / NULLIF(SUM(r.qty_good + r.qty_ng), 0),
+                2
+            ) AS defectRate
+        FROM tp_prod_result r
+        LEFT JOIN production_lines pl ON r.line_id = pl.line_id
+        WHERE r.work_date BETWEEN #{startDate} AND #{endDate}
+        GROUP BY r.work_date, r.line_id, pl.line_name, r.item_code
+        HAVING SUM(r.qty_good + r.qty_ng) > 0
+        ORDER BY defectRate DESC, r.work_date DESC
+    </select>
+    
+    <!-- KPI 요약 -->
+    <select id="getKpiSummary" resultType="com.tp.mes.app.prod.model.ProductionKpiSummary">
+        SELECT
+            /* 계획 정보 */
+            (SELECT COUNT(*) FROM tp_prod_plan p WHERE p.plan_date = #{date}) AS totalPlans,
+            (SELECT COUNT(*) FROM tp_prod_plan p WHERE p.plan_date = #{date} AND p.status = 'COMPLETED') AS completedPlans,
+            (SELECT COUNT(*) FROM tp_prod_plan p WHERE p.plan_date = #{date} AND p.status = 'IN_PROGRESS') AS inProgressPlans,
+            
+            /* 생산 실적 */
+             (SELECT NVL(SUM(p.target_quantity), 0)
+              FROM tp_prod_plan p
+              WHERE p.plan_date = #{date}) AS todayTargetQuantity,
+            
+            (SELECT NVL(SUM(r.qty_good), 0)
+             FROM tp_prod_result r
+             WHERE r.work_date = #{date}) AS todayActualQuantity,
+            
+
+            
+            /* 품질 정보 */
+            (SELECT NVL(SUM(r.qty_good), 0)
+             FROM tp_prod_result r
+             WHERE r.work_date = #{date}) AS todayTotalGood,
+            
+            (SELECT NVL(SUM(r.qty_ng), 0)
+             FROM tp_prod_result r
+             WHERE r.work_date = #{date}) AS todayTotalDefect,
+            
+
+            
+            /* 장비 현황 */
+            (SELECT COUNT(*)
+             FROM tp_equipment e
+             WHERE e.active_yn = 'Y') AS totalEquipment,
+            
+            (SELECT COUNT(*)
+             FROM tp_equipment e
+             WHERE e.status = 'RUNNING'
+               AND e.active_yn = 'Y') AS runningEquipment,
+            
+            (SELECT COUNT(*)
+             FROM tp_equipment e
+             WHERE e.status = 'MAINTENANCE'
+               AND e.active_yn = 'Y') AS maintenanceEquipment,
+            
+            (SELECT COUNT(*)
+             FROM tp_equipment e
+             WHERE e.status = 'ERROR'
+               AND e.active_yn = 'Y') AS errorEquipment,
+            
+            (SELECT NVL(AVG(e.utilization_rate), 0)
+             FROM tp_equipment e
+             WHERE e.active_yn = 'Y') AS equipmentUtilizationRate
+        FROM DUAL
+    </select>
+    
+</mapper>

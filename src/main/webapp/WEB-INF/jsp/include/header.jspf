@@ -1,0 +1,526 @@
+﻿<%@ page pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<!DOCTYPE html>
+    <html lang="ko">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+        <meta name="Keywords" content="TP, 티피, TP그룹, 티피그룹, 태평양물산">
+        <meta name="Description" content="100년을 향한 새로운 도약. 태평양물산의 새로운 이름, TP 공식 홈페이지입니다.">
+        <title>Portfolio - Junseok Choi</title>
+
+        <!-- Local CSS Files -->
+        <link rel="stylesheet" href="/assets/css/base.css">
+        <link rel="stylesheet" href="/assets/css/common.css">
+        <link rel="stylesheet" href="https://tp-inc.com/common/css/swiper.min.css">
+        <link rel="stylesheet" href="/assets/css/main.css">
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+        <!-- Custom CSS Fixes for Layout Issues -->
+        <style>
+            /* Fix Swiper container height bug */
+            .swiper-container-wrapper,
+            .swiper-container {
+                height: 100vh !important;
+                max-height: 100vh !important;
+            }
+
+            .swiper-wrapper {
+                height: 100% !important;
+            }
+
+            .swiper-slide {
+                height: 100vh !important;
+            }
+
+            /* Constrain header positioning */
+            #header {
+                position: fixed !important;
+                top: 0 !important;
+                z-index: 1000 !important;
+            }
+
+            /* Fix sec-content positioning */
+            .sec-content {
+                position: relative !important;
+                min-height: 100vh !important;
+            }
+
+            .sec01 {
+                height: 100vh !important;
+                width: 100% !important;
+            }
+
+            /* Ensure slider is visible and centered */
+            .swiper-slide .title {
+                position: absolute !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                z-index: 10 !important;
+                color: #fff !important;
+                width: 90% !important;
+                max-width: 1600px !important;
+                text-align: left !important;
+            }
+
+            .swiper-slide .image {
+                position: absolute !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+            }
+
+            .swiper-slide .image img {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+            }
+
+            /* Center all major sections */
+            .sec03,
+            .sec04 {
+                margin: 0 auto !important;
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+
+            /* Fix footer positioning */
+            .sec-footer {
+                position: relative !important;
+                margin-top: 0 !important;
+            }
+
+            .sec-footer .inner {
+                max-width: 1400px !important;
+                margin: 0 auto !important;
+                padding: 0 20px !important;
+            }
+
+            /* Fallback font */
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif !important;
+            }
+
+            /* Desktop Header Layout */
+            #header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 50px;
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(10px);
+            }
+
+            .hd-logo {
+                order: 1;
+            }
+
+            .hd-menu {
+                order: 2;
+                flex: 1;
+                display: flex;
+                justify-content: center;
+            }
+
+            .hd-info {
+                order: 3;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+            }
+
+            /* Desktop Navigation */
+            .gnb-wrap {
+                display: flex;
+            }
+
+            .gnb {
+                display: flex;
+                gap: 40px;
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .gnb>li {
+                position: relative;
+            }
+
+            .gnb>li>.menu-toggle {
+                color: #fff;
+                font-size: 16px;
+                font-weight: 500;
+                padding: 30px 0;
+                display: block;
+                transition: all 0.3s;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+            .gnb>li>.menu-toggle:hover {
+                color: #5cb3e6;
+            }
+
+            /* Desktop Dropdown Submenu */
+            .submenu {
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0, 0, 0, 0.95);
+                padding: 20px;
+                min-width: 180px;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                border-radius: 0 0 10px 10px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+
+            .gnb>li:hover .submenu {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .submenu li {
+                list-style: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .submenu li a {
+                color: rgba(255, 255, 255, 0.8);
+                font-size: 14px;
+                padding: 10px 15px;
+                display: block;
+                transition: all 0.3s;
+                text-decoration: none;
+                border-radius: 5px;
+            }
+
+            .submenu li a:hover {
+                color: #fff;
+                background: rgba(255, 255, 255, 0.1);
+                padding-left: 20px;
+            }
+
+            /* Remove + / - icons on desktop */
+            .menu-toggle::after {
+                display: none;
+            }
+
+            /* Language Switcher Styling */
+            .lang {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .lang a {
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 14px;
+                font-weight: 500;
+                text-decoration: none;
+                transition: color 0.3s;
+                padding: 5px 10px;
+            }
+
+            .lang a.on {
+                color: #fff;
+                font-weight: 600;
+            }
+
+            .lang a:hover {
+                color: #fff;
+            }
+
+            /* Hamburger Menu - Hidden on Desktop */
+            .btn_all_menu {
+                display: none;
+            }
+
+            /* Responsive Mobile Navigation */
+            @media (max-width: 1280px) {
+                #header {
+                    padding: 0 20px;
+                }
+
+                .btn_all_menu {
+                    display: flex !important;
+                    flex-direction: column;
+                    justify-content: space-around;
+                    width: 30px;
+                    height: 30px;
+                    background: transparent;
+                border: none;
+                    cursor: pointer;
+                    padding: 0;
+                    z-index: 1001;
+                    margin-left: 15px;
+                }
+
+                .btn_all_menu span {
+                    width: 100%;
+                    height: 2px;
+                    background: #fff;
+                    transition: all 0.3s ease;
+                    display: block;
+                }
+
+                .btn_all_menu.active span:nth-child(1) {
+                    transform: translateY(8px) rotate(45deg);
+                }
+
+                .btn_all_menu.active span:nth-child(2) {
+                    opacity: 0;
+                }
+
+                .btn_all_menu.active span:nth-child(3) {
+                    transform: translateY(-8px) rotate(-45deg);
+                }
+
+                /* Override common.css completely */
+                #header .hd-menu {
+                    opacity: 1 !important;
+                    visibility: visible !important;
+                    position: fixed !important;
+                    top: 0 !important;
+                    right: -280px !important;
+                    left: auto !important;
+                    width: 280px !important;
+                    height: 100vh !important;
+                    background: rgba(0, 0, 0, 0.95) !important;
+                    transition: right 0.3s ease !important;
+                    z-index: 999 !important;
+                    padding-top: 80px !important;
+                    overflow-y: auto !important;
+                    display: block !important;
+                }
+
+                /* Active state - slide in from right */
+                #header .hd-menu.active {
+                    right: 0 !important;
+                }
+
+                #header .hd-menu .gnb-wrap {
+                    position: static !important;
+                    right: auto !important;
+                    left: auto !important;
+                    width: 100% !important;
+                    height: auto !important;
+                    background-color: transparent !important;
+                    transition: none !important;
+                }
+
+                .hd-menu .gnb {
+                    flex-direction: column;
+                    gap: 0;
+                    padding: 20px;
+                    height: auto !important;
+                }
+
+                .hd-menu .gnb li {
+                    width: 100%;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                    position: relative;
+                }
+
+                /* All menu links - unified styling */
+                .hd-menu .gnb li > a,
+                .hd-menu .gnb li > .menu-toggle {
+                    padding: 14px 0 !important;
+                    font-size: 16px !important;
+                    height: auto !important;
+                    color: #fff;
+                    text-decoration: none;
+                    display: block;
+                    transition: all 0.3s;
+                }
+
+                /* Menu toggle items need right padding for + icon */
+                .hd-menu .gnb li > .menu-toggle {
+                    padding-right: 35px !important;
+                    position: relative;
+                }
+
+                /* Mobile Submenu Styles */
+                .submenu {
+                    position: static;
+                    transform: none;
+                    display: none;
+                    padding-left: 20px;
+                    background: rgba(0, 0, 0, 0.3);
+                    margin-top: 10px;
+                    border-radius: 5px;
+                    opacity: 1;
+                    visibility: visible;
+                    box-shadow: none;
+                    min-width: auto;
+                }
+
+                .submenu.active {
+                    display: block;
+                }
+
+                .submenu li {
+                    border-bottom: none !important;
+                }
+
+                .submenu li a {
+                    font-size: 14px !important;
+                    padding: 12px 15px !important;
+                    color: #fff !important;
+                }
+
+                .submenu li a:hover {
+                    color: #fff !important;
+                    padding-left: 20px !important;
+                    height: 100%;
+                }
+
+                /* Show + / - on mobile only for items with submenu */
+                .has-submenu > .menu-toggle::after {
+                    display: block !important;
+                    content: '+';
+                    font-size: 20px;
+                    font-weight: 300;
+                    position: absolute;
+                    right: 0;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    transition: all 0.3s ease;
+                }
+
+                .has-submenu > .menu-toggle.active::after {
+                    content: '−';
+                }
+
+                .hd-logo {
+                    z-index: 1001;
+                }
+            }
+        </style>
+
+        <script src="https://tp-inc.com/common/js/jquery-1.11.2.min.js"></script>
+        <script src="https://tp-inc.com/common/js/jquery.easing.1.3.js"></script>
+        <script src="https://tp-inc.com/common/js/swiper.min.js"></script>
+        <script src="https://tp-inc.com/common/js/common.js?ver=240604"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/ScrollTrigger.min.js"></script>
+        <script src="https://unpkg.com/@studio-freight/lenis@1.0.33/dist/lenis.min.js"></script>
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.0.2/TweenMax.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.5/ScrollMagic.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/ScrollMagic/2.0.5/plugins/animation.gsap.min.js"></script>
+    </head>
+
+    <body>
+        <div class="wrap main">
+            <section class="sec-wrap">
+                <section class="sec-header">
+    <header id="header" class="up">
+                        <h1 class="hd-logo"><a href="/"><span class="logo-text" style="font-size:24px; font-weight:bold; color:#fff;">Portfolio</span></a></h1>
+                        <div class="hd-menu">
+                            <nav class="gnb-wrap">
+                                <ul class="gnb">
+                                    <li>
+                                        <a href="/" class="menu-toggle"><spring:message code="menu.home"/></a>
+                                    </li>
+                                    <li>
+                                        <a href="/cover-letter"><spring:message code="menu.coverletter"/></a>
+                                    </li>
+                                    <li>
+                                        <%-- Portfolio Menu --%>
+                                        <a href="/dashboard"><spring:message code="menu.portfolio"/></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                        <div class="hd-info">
+                            <div class="lang">
+                                <c:set var="lang" value="${pageContext.response.locale.language}" />
+                                <a href="#" onclick="changeLanguage('ko'); return false;" class="${lang == 'ko' || lang == 'kor' ? 'on' : ''}">KOR</a>
+                                <a href="#" onclick="changeLanguage('en'); return false;" class="${lang == 'en' ? 'on' : ''}">ENG</a>
+                            </div>
+                            <script>
+                                function changeLanguage(lang) {
+                                    const url = new URL(window.location);
+                                    url.searchParams.set('lang', lang);
+                                    window.location.href = url.toString();
+                                }
+                            </script>
+                            <button class="btn_all_menu" id="hamburger" aria-label="Toggle menu">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </button>
+                        </div>
+                    </header>
+
+                <script>
+                    // Mobile menu toggle handler
+                    document.addEventListener('DOMContentLoaded', function() {
+                        // Hamburger menu toggle
+                        var hamburger = document.getElementById('hamburger');
+                        var hdMenu = document.querySelector('.hd-menu');
+                        
+                        if (hamburger && hdMenu) {
+                            hamburger.addEventListener('click', function() {
+                                this.classList.toggle('active');
+                                hdMenu.classList.toggle('active');
+                                document.body.style.overflow = hdMenu.classList.contains('active') ? 'hidden' : '';
+                            });
+                        }
+                        
+                        var gnb = document.querySelector('.hd-menu .gnb');
+                        if (!gnb) return;
+
+                        // Handle clicks on menu items
+                        gnb.addEventListener('click', function(e) {
+                            var target = e.target;
+                            if (!target) return;
+
+                            var link = target.closest('a');
+                            if (!link) return;
+
+                            // Check if this is a menu-toggle link (has submenu)
+                            if (link.classList.contains('menu-toggle')) {
+                                // Only prevent default on mobile (screen width <= 1280px)
+                                if (window.innerWidth <= 1280) {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    
+                                    // Toggle active class
+                                    link.classList.toggle('active');
+                                    
+                                    // Find and toggle submenu
+                                    var parentLi = link.parentElement;
+                                    if (parentLi) {
+                                        var submenu = parentLi.querySelector('.submenu');
+                                        if (submenu) {
+                                            if (submenu.style.display === 'block') {
+                                                submenu.style.display = 'none';
+                                            } else {
+                                                submenu.style.display = 'block';
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                // Explicitly force navigation for regular links
+                                // This ensures they work even if common.js or other scripts interfere
+                                if (link.href && link.getAttribute('href') !== '#') {
+                                    window.location.href = link.href;
+                                }
+                            }
+                        });
+                    });
+                </script>
+                </section>

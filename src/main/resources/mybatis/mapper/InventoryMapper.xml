@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tp.mes.app.inventory.mapper.InventoryMapper">
+    
+    <!-- Result Map -->
+    <resultMap id="inventoryItemResultMap" type="com.tp.mes.app.inventory.model.InventoryItem">
+        <id property="inventoryId" column="inventory_id"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemName" column="item_name"/>
+        <result property="itemType" column="item_type"/>
+        <result property="category" column="category"/>
+        <result property="unit" column="unit"/>
+        <result property="currentQuantity" column="current_quantity"/>
+        <result property="minQuantity" column="min_quantity"/>
+        <result property="maxQuantity" column="max_quantity"/>
+        <result property="unitPrice" column="unit_price"/>
+        <result property="warehouseLocation" column="warehouse_location"/>
+        <result property="lineId" column="line_id"/>
+        <result property="specifications" column="specifications"/>
+        <result property="status" column="status"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+    
+    <!-- 모든 재고 목록 조회 -->
+    <select id="findAll" resultMap="inventoryItemResultMap">
+        SELECT i.inventory_id, i.item_code, i.item_name, i.item_type, 
+               i.category, i.unit, i.current_quantity, i.min_quantity,
+               i.max_quantity, i.unit_price, i.warehouse_location, i.line_id,
+               i.specifications, i.status, i.created_at, i.updated_at
+        FROM tp_inventory i
+        WHERE i.status = 'ACTIVE'
+        ORDER BY i.created_at DESC
+    </select>
+    
+    <!-- ID로 재고 조회 -->
+    <select id="findById" resultMap="inventoryItemResultMap">
+        SELECT i.inventory_id, i.item_code, i.item_name, i.item_type, 
+               i.category, i.unit, i.current_quantity, i.min_quantity,
+               i.max_quantity, i.unit_price, i.warehouse_location, i.line_id,
+               i.specifications, i.status, i.created_at, i.updated_at
+        FROM tp_inventory i
+        WHERE i.inventory_id = #{inventoryId}
+    </select>
+    
+    <!-- 아이템 코드로 조회 -->
+    <select id="findByCode" resultMap="inventoryItemResultMap">
+        SELECT i.inventory_id, i.item_code, i.item_name, i.item_type, 
+               i.category, i.unit, i.current_quantity, i.min_quantity,
+               i.max_quantity, i.unit_price, i.warehouse_location, i.line_id,
+               i.specifications, i.status, i.created_at, i.updated_at
+        FROM tp_inventory i
+        WHERE i.item_code = #{itemCode}
+    </select>
+    
+    <!-- 재고 부족 아이템 조회 -->
+    <select id="findLowStock" resultMap="inventoryItemResultMap">
+        <![CDATA[
+        SELECT i.inventory_id, i.item_code, i.item_name, i.item_type, 
+               i.category, i.unit, i.current_quantity, i.min_quantity,
+               i.max_quantity, i.unit_price, i.warehouse_location, i.line_id,
+               i.specifications, i.status, i.created_at, i.updated_at
+        FROM tp_inventory i
+        WHERE i.current_quantity < i.min_quantity
+          AND i.status = 'ACTIVE'
+        ORDER BY (i.min_quantity - i.current_quantity) DESC
+        ]]>
+    </select>
+    
+    <!-- 타입별 조회 -->
+    <select id="findByType" resultMap="inventoryItemResultMap">
+        SELECT i.inventory_id, i.item_code, i.item_name, i.item_type, 
+               i.category, i.unit, i.current_quantity, i.min_quantity,
+               i.max_quantity, i.unit_price, i.warehouse_location, i.line_id,
+               i.specifications, i.status, i.created_at, i.updated_at
+        FROM tp_inventory i
+        WHERE i.item_type = #{itemType}
+          AND i.status = 'ACTIVE'
+        ORDER BY i.item_name
+    </select>
+    
+    <!-- 상태별 조회 -->
+    <select id="findByStatus" resultMap="inventoryItemResultMap">
+        SELECT i.inventory_id, i.item_code, i.item_name, i.item_type, 
+               i.category, i.unit, i.current_quantity, i.min_quantity,
+               i.max_quantity, i.unit_price, i.warehouse_location, i.line_id,
+               i.specifications, i.status, i.created_at, i.updated_at
+        FROM tp_inventory i
+        WHERE i.status = #{status}
+        ORDER BY i.created_at DESC
+    </select>
+    
+    <!-- 검색 (코드 또는 이름으로) -->
+    <select id="search" resultMap="inventoryItemResultMap">
+        SELECT i.inventory_id, i.item_code, i.item_name, i.item_type, 
+               i.category, i.unit, i.current_quantity, i.min_quantity,
+               i.max_quantity, i.unit_price, i.warehouse_location, i.line_id,
+               i.specifications, i.status, i.created_at, i.updated_at
+        FROM tp_inventory i
+        WHERE (UPPER(i.item_code) LIKE '%' || UPPER(#{keyword}) || '%'
+           OR UPPER(i.item_name) LIKE '%' || UPPER(#{keyword}) || '%')
+          AND i.status = 'ACTIVE'
+        ORDER BY i.item_code
+    </select>
+    
+    <!-- 재고 통계 조회 -->
+    <select id="getStats" resultType="com.tp.mes.app.inventory.model.InventoryStats">
+        <![CDATA[
+        SELECT
+            (SELECT COUNT(*)
+             FROM tp_inventory i
+             WHERE i.status = 'ACTIVE') AS totalItems,
+             
+            (SELECT COUNT(*)
+             FROM tp_inventory i
+             WHERE i.status = 'ACTIVE') AS activeItems,
+             
+            (SELECT COUNT(*)
+             FROM tp_inventory i
+             WHERE i.current_quantity < i.min_quantity
+               AND i.status = 'ACTIVE') AS lowStockItems,
+               
+            (SELECT NVL(SUM(i.current_quantity * i.unit_price), 0)
+             FROM tp_inventory i
+             WHERE i.status = 'ACTIVE') AS totalValue,
+             
+            (SELECT COUNT(*)
+             FROM tp_inventory_transactions t
+             WHERE t.transaction_date >= SYSDATE - 7) AS recentTransactions
+        FROM DUAL
+        ]]>
+    </select>
+    
+    <!-- 신규 재고 등록 -->
+    <insert id="insert" parameterType="com.tp.mes.app.inventory.model.InventoryItem"
+            useGeneratedKeys="true" keyProperty="inventoryId" keyColumn="inventory_id">
+        INSERT INTO tp_inventory (
+            item_code, item_name, item_type, category, unit,
+            current_quantity, min_quantity, max_quantity, unit_price,
+            warehouse_location, line_id, specifications, status,
+            created_at, updated_at
+        ) VALUES (
+            #{itemCode,jdbcType=VARCHAR}, 
+            #{itemName,jdbcType=VARCHAR}, 
+            #{itemType,jdbcType=VARCHAR}, 
+            #{category,jdbcType=VARCHAR}, 
+            #{unit,jdbcType=VARCHAR},
+            #{currentQuantity,jdbcType=DECIMAL}, 
+            #{minQuantity,jdbcType=DECIMAL}, 
+            #{maxQuantity,jdbcType=DECIMAL}, 
+            #{unitPrice,jdbcType=DECIMAL},
+            #{warehouseLocation,jdbcType=VARCHAR}, 
+            #{lineId,jdbcType=NUMERIC}, 
+            #{specifications,jdbcType=VARCHAR}, 
+            NVL(#{status,jdbcType=VARCHAR}, 'ACTIVE'),
+            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+        )
+    </insert>
+    
+    <!-- 재고 정보 수정 -->
+    <update id="update">
+        UPDATE tp_inventory i
+        SET i.item_name = #{itemName,jdbcType=VARCHAR},
+            i.item_type = #{itemType,jdbcType=VARCHAR},
+            i.category = #{category,jdbcType=VARCHAR},
+            i.unit = #{unit,jdbcType=VARCHAR},
+            i.min_quantity = #{minQuantity,jdbcType=DECIMAL},
+            i.max_quantity = #{maxQuantity,jdbcType=DECIMAL},
+            i.unit_price = #{unitPrice,jdbcType=DECIMAL},
+            i.warehouse_location = #{warehouseLocation,jdbcType=VARCHAR},
+            i.line_id = #{lineId,jdbcType=NUMERIC},
+            i.specifications = #{specifications,jdbcType=VARCHAR},
+            i.status = #{status,jdbcType=VARCHAR},
+            i.updated_at = CURRENT_TIMESTAMP
+        WHERE i.inventory_id = #{inventoryId}
+    </update>
+    
+    <!-- 수량 업데이트 -->
+    <update id="updateQuantity">
+        UPDATE tp_inventory i
+        SET i.current_quantity = #{quantity},
+            i.updated_at = CURRENT_TIMESTAMP
+        WHERE i.inventory_id = #{inventoryId}
+    </update>
+    
+    <!-- 재고 삭제 (소프트 삭제) -->
+    <update id="delete">
+        UPDATE tp_inventory i
+        SET i.status = 'DISCONTINUED',
+            i.updated_at = CURRENT_TIMESTAMP
+        WHERE i.inventory_id = #{inventoryId}
+    </update>
+    
+</mapper>

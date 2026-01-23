@@ -1,0 +1,42 @@
+server:
+  port: 8090
+  # When deployed as WAR, the context-path is controlled by the container (we set finalName=TP).
+  # When running locally (spring-boot:run), you can uncomment context-path if desired.
+  # servlet:
+  #   context-path: /TP
+
+  tomcat:
+    # Some Oracle JDBC/security jars contain manifest Class-Path entries like
+    # oracle.osdt/osdt_core.jar which don't exist in Maven repo layouts.
+    # Skipping TLD scanning for those avoids noisy startup errors.
+    additional-tld-skip-patterns: osdt_core.jar,osdt_cert.jar,oraclepki.jar,ojdbc*.jar
+
+spring:
+  datasource:
+    url: ${TP_ORACLE_URL:jdbc:oracle:thin:@//localhost:1521/XEPDB1}
+    username: ${TP_ORACLE_USER:TP_MANUFACTURE}
+    password: ${TP_ORACLE_PASS:TP_MANUFACTURE}
+    driver-class-name: oracle.jdbc.OracleDriver
+    hikari:
+      initialization-fail-timeout: -1
+
+  sql:
+    init:
+      mode: never
+
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+
+  jdbc:
+    template:
+      fetch-size: 200
+
+logging:
+  level:
+    root: INFO
+    org.springframework.jdbc.core: INFO
+    org.springframework.security: DEBUG
+    org.springframework.security.web: DEBUG
+

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.tp.mes.app.factory.mapper.PlantMapper">
+
+    <!-- Result Map -->
+    <resultMap id="PlantResultMap" type="com.tp.mes.app.factory.model.Plant">
+        <id property="plantId" column="plant_id"/>
+        <result property="plantName" column="plant_name"/>
+        <result property="plantNameEn" column="plant_name_en"/>
+        <result property="address" column="address"/>
+        <result property="addressDetail" column="address_detail"/>
+        <result property="postalCode" column="postal_code"/>
+        <result property="coordinates" column="coordinates"/>
+        <result property="plantType" column="plant_type"/>
+        <result property="status" column="status"/>
+        <result property="totalArea" column="total_area"/>
+        <result property="establishedDate" column="established_date"/>
+        <result property="managerEmpId" column="manager_emp_id"/>
+        <result property="phone" column="phone"/>
+        <result property="fax" column="fax"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 모든 사업장 조회 -->
+    <select id="findAll" resultMap="PlantResultMap">
+        SELECT * FROM plants
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 유형별 사업장 조회 -->
+    <select id="findByType" parameterType="string" resultMap="PlantResultMap">
+        SELECT * FROM plants
+        WHERE plant_type = #{plantType}
+        ORDER BY plant_name
+    </select>
+
+    <!-- 상태별 사업장 조회 -->
+    <select id="findByStatus" parameterType="string" resultMap="PlantResultMap">
+        SELECT * FROM plants
+        WHERE status = #{status}
+        ORDER BY plant_name
+    </select>
+
+    <!-- ID로 사업장 조회 -->
+    <select id="findById" parameterType="string" resultMap="PlantResultMap">
+        SELECT * FROM plants
+        WHERE plant_id = #{plantId}
+    </select>
+
+    <!-- 사업장 등록 -->
+    <insert id="insert" parameterType="com.tp.mes.app.factory.model.Plant">
+        INSERT INTO plants(
+            plant_id, plant_name, plant_name_en, address, address_detail,
+            postal_code, coordinates, plant_type, status, total_area,
+            established_date, manager_emp_id, phone, fax
+        ) VALUES (
+            #{plantId}, #{plantName}, #{plantNameEn, jdbcType=VARCHAR}, #{address, jdbcType=VARCHAR}, #{addressDetail, jdbcType=VARCHAR},
+            #{postalCode, jdbcType=VARCHAR}, #{coordinates, jdbcType=VARCHAR}, #{plantType}, #{status}, #{totalArea, jdbcType=NUMERIC},
+            #{establishedDate, jdbcType=DATE}, #{managerEmpId, jdbcType=VARCHAR}, #{phone, jdbcType=VARCHAR}, #{fax, jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <!-- 사업장 수정 -->
+    <update id="update" parameterType="com.tp.mes.app.factory.model.Plant">
+        UPDATE plants SET
+            plant_name = #{plantName},
+            plant_name_en = #{plantNameEn, jdbcType=VARCHAR},
+            address = #{address, jdbcType=VARCHAR},
+            address_detail = #{addressDetail, jdbcType=VARCHAR},
+            postal_code = #{postalCode, jdbcType=VARCHAR},
+            coordinates = #{coordinates, jdbcType=VARCHAR},
+            plant_type = #{plantType},
+            status = #{status},
+            total_area = #{totalArea, jdbcType=NUMERIC},
+            established_date = #{establishedDate, jdbcType=DATE},
+            manager_emp_id = #{managerEmpId, jdbcType=VARCHAR},
+            phone = #{phone, jdbcType=VARCHAR},
+            fax = #{fax, jdbcType=VARCHAR},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE plant_id = #{plantId}
+    </update>
+
+    <!-- 사업장 삭제 -->
+    <delete id="delete" parameterType="string">
+        DELETE FROM plants WHERE plant_id = #{plantId}
+    </delete>
+
+</mapper>

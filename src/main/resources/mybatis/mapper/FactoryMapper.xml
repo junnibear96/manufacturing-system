@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.tp.mes.app.factory.mapper.FactoryMapper">
+
+    <!-- Result Map -->
+    <resultMap id="FactoryResultMap" type="com.tp.mes.app.factory.model.Factory">
+        <id property="factoryId" column="factory_id"/>
+        <result property="plantId" column="plant_id"/>
+        <result property="factoryName" column="factory_name"/>
+        <result property="factoryNameEn" column="factory_name_en"/>
+        <result property="factoryCode" column="factory_code"/>
+        <result property="factoryType" column="factory_type"/>
+        <result property="status" column="status"/>
+        <result property="productCategory" column="product_category"/>
+        <result property="buildingCode" column="building_code"/>
+        <result property="floor" column="floor"/>
+        <result property="area" column="area"/>
+        <result property="targetUtilizationRate" column="target_utilization_rate"/>
+        <result property="managerEmpId" column="manager_emp_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 모든 공장 조회 -->
+    <select id="findAll" resultMap="FactoryResultMap">
+        SELECT * FROM factories
+        ORDER BY plant_id, factory_name
+    </select>
+
+    <!-- 사업장별 공장 조회 -->
+    <select id="findByPlant" parameterType="string" resultMap="FactoryResultMap">
+        SELECT * FROM factories
+        WHERE plant_id = #{plantId}
+        ORDER BY factory_name
+    </select>
+
+    <!-- 유형별 공장 조회 -->
+    <select id="findByType" parameterType="string" resultMap="FactoryResultMap">
+        SELECT * FROM factories
+        WHERE factory_type = #{factoryType}
+        ORDER BY factory_name
+    </select>
+
+    <!-- 상태별 공장 조회 -->
+    <select id="findByStatus" parameterType="string" resultMap="FactoryResultMap">
+        SELECT * FROM factories
+        WHERE status = #{status}
+        ORDER BY factory_name
+    </select>
+
+    <!-- ID로 공장 조회 -->
+    <select id="findById" parameterType="string" resultMap="FactoryResultMap">
+        SELECT * FROM factories
+        WHERE factory_id = #{factoryId}
+    </select>
+
+    <!-- 공장 등록 -->
+    <insert id="insert" parameterType="com.tp.mes.app.factory.model.Factory">
+        INSERT INTO factories(
+            factory_id, plant_id, factory_name, factory_name_en, factory_code,
+            factory_type, status, product_category, building_code, floor,
+            area, target_utilization_rate, manager_emp_id
+        ) VALUES (
+            #{factoryId}, #{plantId}, #{factoryName}, #{factoryNameEn}, #{factoryCode},
+            #{factoryType}, #{status}, #{productCategory}, #{buildingCode}, #{floor},
+            #{area}, #{targetUtilizationRate}, #{managerEmpId}
+        )
+    </insert>
+
+    <!-- 공장 수정 -->
+    <!-- 공장 수정 -->
+    <update id="update" parameterType="com.tp.mes.app.factory.model.Factory">
+        UPDATE factories SET
+            factory_name = #{factoryName},
+            factory_name_en = #{factoryNameEn},
+            factory_code = #{factoryCode},
+            factory_type = #{factoryType},
+            status = #{status},
+            product_category = #{productCategory},
+            building_code = #{buildingCode},
+            floor = #{floor},
+            area = #{area},
+            target_utilization_rate = #{targetUtilizationRate},
+            manager_emp_id = #{managerEmpId},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE factory_id = #{factoryId}
+    </update>
+
+    <!-- 공장 삭제 -->
+    <delete id="delete" parameterType="string">
+        DELETE FROM factories WHERE factory_id = #{factoryId}
+    </delete>
+
+    <!-- 사업장별 공장 수 -->
+    <select id="countByPlant" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM factories
+        WHERE plant_id = #{plantId}
+    </select>
+
+</mapper>

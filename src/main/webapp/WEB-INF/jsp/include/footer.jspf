@@ -1,0 +1,195 @@
+﻿<%@ page pageEncoding="UTF-8" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<!-- Modern Footer -->
+<footer class="modern-footer">
+    <div class="footer-container">
+        <!-- Footer Top Section -->
+        <div class="footer-top" style="display: flex; justify-content: center; align-items: center; border-bottom: none; padding-bottom: 20px;">
+            <div class="footer-brand" style="align-items: center;">
+                <div class="footer-logo">
+                    <span class="logo-text">Portfolio</span>
+                </div>
+                <p class="footer-tagline">Building modern web experiences.</p>
+            </div>
+        </div>
+
+        <!-- Footer Bottom Section -->
+        <div class="footer-bottom" style="justify-content: center;">
+            <div class="footer-info">
+                <p class="copyright">
+                    © 2025 Junseok Choi. All rights reserved.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+.modern-footer {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+    color: #e2e8f0;
+    padding: 60px 0 30px;
+    margin-top: 80px;
+    position: relative;
+}
+
+.modern-footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+}
+
+.footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 1.5fr 2.5fr;
+    gap: 60px;
+    padding-bottom: 50px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 28px;
+    font-weight: 700;
+    color: white;
+}
+
+.footer-logo .logo-icon {
+    font-size: 36px;
+}
+
+.footer-tagline {
+    color: #a0aec0;
+    font-size: 15px;
+    margin: 0;
+}
+
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+}
+
+.footer-column h4 {
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+}
+
+.footer-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-column ul li {
+    margin-bottom: 12px;
+}
+
+.footer-column ul li a {
+    color: #cbd5e0;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s;
+    display: inline-block;
+}
+
+.footer-column ul li a:hover {
+    color: #667eea;
+    transform: translateX(4px);
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 30px;
+}
+
+.footer-info p {
+    margin: 6px 0;
+    font-size: 13px;
+    color: #a0aec0;
+}
+
+.company-address {
+    font-weight: 500;
+    color: #cbd5e0;
+}
+
+.copyright {
+    color: #718096;
+}
+
+.footer-badges {
+    display: flex;
+    gap: 16px;
+}
+
+.badge-item {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #e2e8f0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .footer-links {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .modern-footer {
+        padding: 40px 0 20px;
+        margin-top: 60px;
+    }
+
+    .footer-links {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .footer-badges {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+</style>

@@ -1,0 +1,52 @@
+# Generated files
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.local
+.env.prod
+
+# Wallet sensitive files (DO NOT COMMIT PASSWORDS!)
+wallet/*.p12
+wallet/*.pem
+
+# But keep these wallet files (needed for deployment)
+!wallet/tnsnames.ora
+!wallet/sqlnet.ora
+!wallet/ojdbc.properties
+!wallet/truststore.jks
+!wallet/keystore.jks
+!wallet/cwallet.sso
+!wallet/README
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# Temp files
+*.tmp
+*.bak
+*.swp
+*~
+
+# Test files
+test-output/

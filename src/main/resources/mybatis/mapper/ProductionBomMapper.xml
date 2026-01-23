@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tp.mes.app.prod.mapper.ProductionBomMapper">
+
+    <!-- Result Map -->
+    <resultMap id="ProductionBomResultMap" type="com.tp.mes.app.prod.model.ProductionBom">
+        <id property="bomId" column="bom_id"/>
+        <result property="lineId" column="line_id"/>
+        <result property="inventoryId" column="inventory_id"/>
+        <result property="consumptionRate" column="consumption_rate"/>
+        <result property="unit" column="unit"/>
+        <result property="notes" column="notes"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <!-- Joined fields -->
+        <result property="lineName" column="line_name"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemName" column="item_name"/>
+    </resultMap>
+
+    <!-- 모든 BOM 조회 -->
+    <select id="findAll" resultMap="ProductionBomResultMap">
+        SELECT b.bom_id, b.line_id, b.inventory_id, b.consumption_rate,
+               b.unit, b.notes, b.is_active, b.created_at, b.updated_at,
+               l.line_name, i.item_code, i.item_name
+        FROM tp_production_bom b
+        LEFT JOIN tp_production_lines l ON b.line_id = l.line_id
+        LEFT JOIN tp_inventory i ON b.inventory_id = i.inventory_id
+        ORDER BY b.line_id, b.bom_id
+    </select>
+
+    <!-- 특정 라인의 BOM 목록 조회 -->
+    <select id="findByLineId" resultMap="ProductionBomResultMap">
+        SELECT b.bom_id, b.line_id, b.inventory_id, b.consumption_rate,
+               b.unit, b.notes, b.is_active, b.created_at, b.updated_at,
+               l.line_name, i.item_code, i.item_name
+        FROM tp_production_bom b
+        LEFT JOIN tp_production_lines l ON b.line_id = l.line_id
+        LEFT JOIN tp_inventory i ON b.inventory_id = i.inventory_id
+        WHERE b.line_id = #{lineId,jdbcType=VARCHAR}
+        ORDER BY b.bom_id
+    </select>
+
+    <!-- 특정 재고 아이템의 BOM 목록 조회 -->
+    <select id="findByInventoryId" resultMap="ProductionBomResultMap">
+        SELECT b.bom_id, b.line_id, b.inventory_id, b.consumption_rate,
+               b.unit, b.notes, b.is_active, b.created_at, b.updated_at,
+               l.line_name, i.item_code, i.item_name
+        FROM tp_production_bom b
+        LEFT JOIN tp_production_lines l ON b.line_id = l.line_id
+        LEFT JOIN tp_inventory i ON b.inventory_id = i.inventory_id
+        WHERE b.inventory_id = #{inventoryId,jdbcType=NUMERIC}
+        ORDER BY b.line_id, b.bom_id
+    </select>
+
+    <!-- 활성화된 BOM만 조회 -->
+    <select id="findActiveByLineId" resultMap="ProductionBomResultMap">
+        SELECT b.bom_id, b.line_id, b.inventory_id, b.consumption_rate,
+               b.unit, b.notes, b.is_active, b.created_at, b.updated_at,
+               l.line_name, i.item_code, i.item_name
+        FROM tp_production_bom b
+        LEFT JOIN tp_production_lines l ON b.line_id = l.line_id
+        LEFT JOIN tp_inventory i ON b.inventory_id = i.inventory_id
+        WHERE b.line_id = #{lineId,jdbcType=VARCHAR}
+          AND b.is_active = 'Y'
+        ORDER BY b.bom_id
+    </select>
+
+    <!-- BOM ID로 조회 -->
+    <select id="findById" resultMap="ProductionBomResultMap">
+        SELECT b.bom_id, b.line_id, b.inventory_id, b.consumption_rate,
+               b.unit, b.notes, b.is_active, b.created_at, b.updated_at,
+               l.line_name, i.item_code, i.item_name
+        FROM tp_production_bom b
+        LEFT JOIN tp_production_lines l ON b.line_id = l.line_id
+        LEFT JOIN tp_inventory i ON b.inventory_id = i.inventory_id
+        WHERE b.bom_id = #{bomId,jdbcType=NUMERIC}
+    </select>
+
+    <!-- BOM 등록 -->
+    <insert id="insert" parameterType="com.tp.mes.app.prod.model.ProductionBom">
+        INSERT INTO tp_production_bom (
+            line_id, inventory_id, consumption_rate, unit, notes, is_active
+        ) VALUES (
+            #{lineId,jdbcType=VARCHAR},
+            #{inventoryId,jdbcType=NUMERIC},
+            #{consumptionRate,jdbcType=DECIMAL},
+            #{unit,jdbcType=VARCHAR},
+            #{notes,jdbcType=VARCHAR},
+            NVL(#{isActive,jdbcType=VARCHAR}, 'Y')
+        )
+    </insert>
+
+    <!-- BOM 수정 -->
+    <update id="update">
+        UPDATE tp_production_bom
+        SET consumption_rate = #{consumptionRate,jdbcType=DECIMAL},
+            unit = #{unit,jdbcType=VARCHAR},
+            notes = #{notes,jdbcType=VARCHAR},
+            is_active = #{isActive,jdbcType=VARCHAR},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE bom_id = #{bomId}
+    </update>
+
+    <!-- BOM 삭제 (소프트 삭제) -->
+    <update id="delete">
+        UPDATE tp_production_bom
+        SET is_active = 'N',
+            updated_at = CURRENT_TIMESTAMP
+        WHERE bom_id = #{bomId}
+    </update>
+
+    <!-- BOM 완전 삭제 -->
+    <delete id="deleteHard">
+        DELETE FROM tp_production_bom
+        WHERE bom_id = #{bomId}
+    </delete>
+
+</mapper>

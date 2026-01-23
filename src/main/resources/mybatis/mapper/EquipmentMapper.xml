@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tp.mes.app.prod.mapper.EquipmentMapper">
+    
+    <!-- ResultMap for Equipment -->
+    <resultMap id="equipmentResultMap" type="com.tp.mes.app.prod.model.Equipment">
+        <id property="equipmentId" column="equipment_id"/>
+        <result property="equipmentCode" column="equipment_code"/>
+        <result property="equipmentName" column="equipment_name"/>
+        <result property="processId" column="process_id"/>
+        <result property="lineId" column="line_id"/>
+        <result property="status" column="status" 
+                typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="activeYn" column="active_yn"/>
+        <result property="lastMaintenanceAt" column="last_maintenance_at"/>
+        <result property="maintenanceInterval" column="maintenance_interval"/>
+        <result property="utilizationRate" column="utilization_rate"/>
+        <result property="oee" column="oee"/>
+        <result property="specifications" column="specifications"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- ID로 장비 조회 -->
+    <select id="findById" resultMap="equipmentResultMap">
+        SELECT * FROM tp_equipment WHERE equipment_id = #{equipmentId}
+    </select>
+
+    <!-- 코드로 장비 조회 -->
+    <select id="findByCode" resultMap="equipmentResultMap">
+        SELECT * FROM tp_equipment WHERE equipment_code = #{equipmentCode}
+    </select>
+
+    <!-- 라인별 장비 목록 -->
+    <select id="findByLineId" resultMap="equipmentResultMap">
+        SELECT * FROM tp_equipment WHERE line_id = #{lineId} ORDER BY equipment_code
+    </select>
+
+    <!-- 상태별 장비 목록 -->
+    <select id="findByStatus" resultMap="equipmentResultMap">
+        SELECT * FROM tp_equipment WHERE status = #{status} ORDER BY equipment_code
+    </select>
+
+    <!-- 전체 장비 목록 -->
+    <select id="findAll" resultMap="equipmentResultMap">
+        SELECT * FROM tp_equipment WHERE active_yn = 'Y' ORDER BY equipment_code
+    </select>
+    
+    <!-- 점검 필요 장비 조회 -->
+    <select id="findMaintenanceDue" resultMap="equipmentResultMap">
+        SELECT *
+        FROM tp_equipment
+        WHERE status != 'MAINTENANCE'
+          AND active_yn = 'Y'
+          AND last_maintenance_at IS NOT NULL
+          AND maintenance_interval IS NOT NULL
+          AND (SYSTIMESTAMP - last_maintenance_at) > NUMTODSINTERVAL(maintenance_interval, 'DAY')
+        ORDER BY last_maintenance_at ASC
+    </select>
+    
+    <!-- 라인별 평균 가동률 -->
+    <select id="getAverageUtilizationRateByLine" resultType="double">
+        SELECT NVL(AVG(utilization_rate), 0)
+        FROM tp_equipment
+        WHERE line_id = #{lineId}
+          AND active_yn = 'Y'
+    </select>
+
+    <!-- 장비 검색 -->
+    <select id="search" resultMap="equipmentResultMap">
+        SELECT *
+        FROM tp_equipment
+        WHERE active_yn = 'Y'
+        <if test="keyword != null and keyword != ''">
+            AND (equipment_name LIKE '%' || #{keyword} || '%' OR line_id LIKE '%' || #{keyword} || '%')
+        </if>
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
+        ORDER BY equipment_code
+    </select>
+
+    <!-- 장비 상태 업데이트 -->
+    <update id="updateStatus">
+        UPDATE tp_equipment 
+        SET status = #{status} 
+        WHERE equipment_id = #{equipmentId}
+    </update>
+
+    <!-- 점검 기록 -->
+    <update id="recordMaintenance">
+        UPDATE tp_equipment 
+        SET last_maintenance_at = SYSTIMESTAMP 
+        WHERE equipment_id = #{equipmentId}
+    </update>
+
+    <!-- 가동률 업데이트 -->
+    <update id="updateUtilizationRate">
+        UPDATE tp_equipment 
+        SET utilization_rate = #{rate} 
+        WHERE equipment_id = #{equipmentId}
+    </update>
+    
+</mapper>

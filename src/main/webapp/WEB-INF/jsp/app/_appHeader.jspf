@@ -1,0 +1,396 @@
+﻿<%@ page pageEncoding="UTF-8" contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<header class="factory-header">
+    <div class="header-container">
+        <div class="header-left">
+            <a href="/dashboard" class="logo">
+                <span class="logo-icon">🏭</span>
+                <span class="logo-text">Portfolio</span>
+            </a>
+            <nav class="main-nav">
+                <a href="/hr/employees" class="nav-link"><spring:message code="app.header.hr" text="인사관리"/></a>
+                <a href="/factory" class="nav-link"><spring:message code="app.header.factory" text="공장관리"/></a>
+                <a href="/production/dashboard" class="nav-link"><spring:message code="app.header.production" text="생산현황"/></a>
+                <a href="/inventory" class="nav-link"><spring:message code="app.header.inventory" text="재고현황"/></a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <select class="lang-selector">
+                <option value="ko">KOR</option>
+                <option value="en">ENG</option>
+            </select>
+            <div class="user-menu">
+                <span class="user-name"><spring:message code="app.header.admin" text="관리자"/></span>
+                <a href="/logout" class="btn-logout"><spring:message code="app.header.logout" text="로그아웃"/></a>
+            </div>
+            <!-- Mobile Menu Toggle Button -->
+            <button class="mobile-menu-toggle" aria-label="메뉴" id="mobileMenuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </div>
+    <!-- Mobile Navigation Menu -->
+    <nav class="mobile-nav" id="mobileNav">
+        <a href="/hr/employees" class="mobile-nav-link"><spring:message code="app.header.hr" text="인사관리"/></a>
+        <a href="/factory" class="mobile-nav-link"><spring:message code="app.header.factory" text="공장관리"/></a>
+        <a href="/production/dashboard" class="mobile-nav-link"><spring:message code="app.header.production" text="생산현황"/></a>
+        <a href="/inventory" class="mobile-nav-link"><spring:message code="app.header.inventory" text="재고현황"/></a>
+    </nav>
+</header>
+
+<style>
+.factory-header {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 24px;
+    color: #1a202c;
+}
+
+.logo-icon {
+    font-size: 32px;
+}
+
+.main-nav {
+    display: flex;
+    gap: 8px;
+}
+
+.nav-link {
+    padding: 8px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #4a5568;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.nav-link:hover {
+    background: #f7fafc;
+    color: #667eea;
+}
+
+.nav-link.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.lang-selector {
+    padding: 8px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4a5568;
+    cursor: pointer;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-name {
+    font-weight: 600;
+    color: #2d3748;
+    font-size: 14px;
+}
+
+.btn-logout {
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: #f7fafc;
+    color: #718096;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-logout:hover {
+    background: #bee3f8;
+    color: #2c5282;
+}
+
+/* Mobile Menu Toggle Button (Hamburger) */
+.mobile-menu-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 101;
+}
+
+.mobile-menu-toggle span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background: #2d3748;
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+
+.mobile-menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(7px, 7px);
+}
+
+.mobile-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.mobile-menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Mobile Navigation Menu */
+.mobile-nav {
+    display: none;
+    flex-direction: column;
+    background: white;
+    border-top: 1px solid #e2e8f0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+}
+
+.mobile-nav.active {
+    max-height: 300px;
+}
+
+.mobile-nav-link {
+    padding: 16px 24px;
+    text-decoration: none;
+    color: #4a5568;
+    font-weight: 500;
+    font-size: 14px;
+    border-bottom: 1px solid #f7fafc;
+    transition: all 0.2s;
+}
+
+.mobile-nav-link:hover {
+    background: #f7fafc;
+    color: #667eea;
+    padding-left: 32px;
+}
+
+@media (max-width: 768px) {
+    .main-nav {
+        display: none;
+    }
+    
+    .user-menu {
+        display: none;
+    }
+    
+    .mobile-menu-toggle {
+        display: flex;
+    }
+    
+    .mobile-nav {
+        display: flex;
+    }
+    
+    .header-container {
+        padding: 0 16px;
+    }
+    
+    .lang-selector {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .logo-text {
+        font-size: 20px;
+    }
+    
+    .logo-icon {
+        font-size: 28px;
+    }
+}
+
+</style>
+
+<script>
+    (function() {
+        'use strict';
+        
+        // Utility function to get cookie value
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) {
+                return parts.pop().split(';').shift();
+            }
+            return null;
+        }
+        
+        // Get current language from URL or cookie
+        function getCurrentLang() {
+            // First check URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const urlLang = urlParams.get('lang');
+            if (urlLang) {
+                return urlLang;
+            }
+            
+            // Then check cookie
+            const cookieLang = getCookie('lang');
+            if (cookieLang) {
+                return cookieLang;
+            }
+            
+            return 'ko'; // default to Korean
+        }
+        
+        // Add lang parameter to URL
+        function addLangToUrl(url, lang) {
+            if (!url || url.startsWith('#') || url.startsWith('javascript:')) {
+                return url;
+            }
+            
+            try {
+                const urlObj = new URL(url, window.location.origin);
+                
+                // Only process internal links
+                if (urlObj.origin !== window.location.origin) {
+                    return url;
+                }
+                
+                // Don't add if already present
+                if (urlObj.searchParams.has('lang')) {
+                    return url;
+                }
+                
+                // Add lang parameter
+                urlObj.searchParams.set('lang', lang);
+                return urlObj.pathname + urlObj.search + urlObj.hash;
+            } catch (e) {
+                // If URL parsing fails, return original
+                return url;
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentLang = getCurrentLang();
+            
+            console.log('Current language:', currentLang); // Debug
+            
+            // Set language selector value
+            const langSelector = document.querySelector('.lang-selector');
+            if (langSelector) {
+                langSelector.value = currentLang;
+                
+                langSelector.addEventListener('change', function() {
+                    const lang = this.value;
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('lang', lang);
+                    window.location.href = url.toString();
+                });
+            }
+            
+            // Add lang parameter to all internal links (if not Korean)
+            if (currentLang !== 'ko') {
+                // Update all links
+                const links = document.querySelectorAll('a[href]');
+                links.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href && href.startsWith('/')) {
+                        const newHref = addLangToUrl(href, currentLang);
+                        if (newHref !== href) {
+                            link.setAttribute('href', newHref);
+                        }
+                    }
+                });
+                
+                // Update all forms
+                const forms = document.querySelectorAll('form');
+                forms.forEach(form => {
+                    const action = form.getAttribute('action');
+                    if (action && action.startsWith('/')) {
+                        const newAction = addLangToUrl(action, currentLang);
+                        if (newAction !== action) {
+                            form.setAttribute('action', newAction);
+                        }
+                    }
+                    
+                    // Also add hidden input for non-GET forms
+                    if (form.method.toLowerCase() !== 'get') {
+                        const existingInput = form.querySelector('input[name="lang"]');
+                        if (!existingInput) {
+                            const hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.name = 'lang';
+                            hiddenInput.value = currentLang;
+                            form.appendChild(hiddenInput);
+                        }
+                    }
+                });
+            }
+            
+            // Mobile Menu Toggle
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const mobileNav = document.getElementById('mobileNav');
+            
+            if (mobileMenuToggle && mobileNav) {
+                mobileMenuToggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    mobileNav.classList.toggle('active');
+                });
+                
+                // Close mobile menu when clicking on a link
+                const mobileLinks = mobileNav.querySelectorAll('.mobile-nav-link');
+                mobileLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenuToggle.classList.remove('active');
+                        mobileNav.classList.remove('active');
+                    });
+                });
+            }
+        });
+    })();
+</script>

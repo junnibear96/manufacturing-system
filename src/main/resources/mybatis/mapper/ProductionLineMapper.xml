@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        
+<mapper namespace="com.tp.mes.app.factory.mapper.ProductionLineMapper">
+
+    <!-- Result Map -->
+    <resultMap id="ProductionLineResultMap" type="com.tp.mes.app.factory.model.ProductionLine">
+        <id property="lineId" column="line_id"/>
+        <result property="factoryId" column="factory_id"/>
+        <result property="lineName" column="line_name"/>
+        <result property="lineCode" column="line_code"/>
+        <result property="lineType" column="line_type"/>
+        <result property="status" column="status"/>
+        <result property="isOperating" column="is_operating"/>
+        <result property="maxCapacity" column="max_capacity"/>
+        <result property="taktTime" column="takt_time"/>
+        <result property="cycleTime" column="cycle_time"/>
+        <result property="utilizationRate" column="utilization_rate"/>
+        <result property="standardWorkers" column="standard_workers"/>
+        <result property="currentWorkers" column="current_workers"/>
+        <result property="lineLeaderEmpId" column="line_leader_emp_id"/>
+        <result property="producibleItems" column="producible_items"/>
+        <result property="equipmentList" column="equipment_list"/>
+        <result property="shiftPattern" column="shift_pattern"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <result property="lastOperatedAt" column="last_operated_at"/>
+    </resultMap>
+
+    <!-- 모든 생산라인 조회 -->
+    <select id="findAll" resultMap="ProductionLineResultMap">
+        SELECT * FROM production_lines
+        ORDER BY factory_id, line_name
+    </select>
+
+    <!-- 공장별 생산라인 조회 -->
+    <select id="findByFactory" parameterType="string" resultMap="ProductionLineResultMap">
+        SELECT * FROM production_lines
+        WHERE factory_id = #{factoryId}
+        ORDER BY line_name
+    </select>
+
+    <!-- 상태별 생산라인 조회 -->
+    <select id="findByStatus" parameterType="string" resultMap="ProductionLineResultMap">
+        SELECT * FROM production_lines
+        WHERE status = #{status}
+        ORDER BY line_name
+    </select>
+
+    <!-- 가동 중인 생산라인 조회 -->
+    <select id="findRunning" resultMap="ProductionLineResultMap">
+        SELECT * FROM production_lines
+        WHERE is_operating = 1 AND status = 'RUNNING'
+        ORDER BY line_name
+    </select>
+
+    <!-- ID로 생산라인 조회 -->
+    <select id="findById" parameterType="string" resultMap="ProductionLineResultMap">
+        SELECT * FROM production_lines
+        WHERE line_id = #{lineId}
+    </select>
+
+    <!-- 생산라인 등록 -->
+    <insert id="insert" parameterType="com.tp.mes.app.factory.model.ProductionLine">
+        INSERT INTO production_lines(
+            line_id, factory_id, line_name, line_code, line_type,
+            status, is_operating, max_capacity, takt_time, cycle_time,
+            utilization_rate, standard_workers, current_workers,
+            line_leader_emp_id, producible_items, equipment_list,
+            shift_pattern
+        ) VALUES (
+            #{lineId}, #{factoryId}, #{lineName}, #{lineCode}, #{lineType},
+            #{status}, #{isOperating}, #{maxCapacity}, #{taktTime}, #{cycleTime},
+            #{utilizationRate}, #{standardWorkers}, #{currentWorkers},
+            #{lineLeaderEmpId}, #{producibleItems}, #{equipmentList},
+            #{shiftPattern}
+        )
+    </insert>
+
+    <!-- 생산라인 수정 -->
+    <update id="update" parameterType="com.tp.mes.app.factory.model.ProductionLine">
+        UPDATE production_lines SET
+            line_name = #{lineName},
+            line_code = #{lineCode},
+            line_type = #{lineType},
+            status = #{status},
+            is_operating = #{isOperating},
+            max_capacity = #{maxCapacity},
+            takt_time = #{taktTime},
+            cycle_time = #{cycleTime},
+            utilization_rate = #{utilizationRate},
+            standard_workers = #{standardWorkers},
+            current_workers = #{currentWorkers},
+            line_leader_emp_id = #{lineLeaderEmpId},
+            producible_items = #{producibleItems},
+            equipment_list = #{equipmentList},
+            shift_pattern = #{shiftPattern},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE line_id = #{lineId}
+    </update>
+
+    <!-- 생산라인 삭제 -->
+    <delete id="delete" parameterType="string">
+        DELETE FROM production_lines WHERE line_id = #{lineId}
+    </delete>
+
+    <!-- 상태 변경 -->
+    <update id="updateStatus">
+        UPDATE production_lines SET
+            status = #{status},
+            is_operating = #{isOperating},
+            last_operated_at = CASE WHEN #{isOperating} = 1 THEN CURRENT_TIMESTAMP ELSE last_operated_at END,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE line_id = #{lineId}
+    </update>
+
+    <!-- 현재 투입 인원 업데이트 -->
+    <update id="updateCurrentWorkers">
+        UPDATE production_lines SET
+            current_workers = #{currentWorkers},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE line_id = #{lineId}
+    </update>
+
+    <!-- 가동률 업데이트 -->
+    <update id="updateUtilizationRate">
+        UPDATE production_lines SET
+            utilization_rate = #{utilizationRate},
+            updated_at = CURRENT_TIMESTAMP
+        WHERE line_id = #{lineId}
+    </update>
+
+    <!-- 공장별 생산라인 수 -->
+    <select id="countByFactory" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM production_lines
+        WHERE factory_id = #{factoryId}
+    </select>
+
+</mapper>
