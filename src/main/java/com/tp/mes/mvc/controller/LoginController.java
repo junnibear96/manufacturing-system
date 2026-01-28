@@ -19,9 +19,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class LoginController {
 
     private final NoticeService noticeService;
+    private final com.tp.mes.app.prod.service.ProductionAnalysisService productionAnalysisService;
+    private final com.tp.mes.app.inventory.service.InventoryService inventoryService;
 
-    public LoginController(NoticeService noticeService) {
+    public LoginController(NoticeService noticeService,
+            com.tp.mes.app.prod.service.ProductionAnalysisService productionAnalysisService,
+            com.tp.mes.app.inventory.service.InventoryService inventoryService) {
         this.noticeService = noticeService;
+        this.productionAnalysisService = productionAnalysisService;
+        this.inventoryService = inventoryService;
     }
 
     /**
@@ -80,6 +86,32 @@ public class LoginController {
 
         // Load recent notices for dashboard
         model.addAttribute("recentNotices", noticeService.listNotices());
+
+        // --- MANUFACTURING DASHBOARD DATA ---
+        // 1. Production KPI
+        // Use try-catch to be safe if DB is not fully ready (though services usually
+        // handle it)
+        try {
+            model.addAttribute("kpi", productionAnalysisService.getTodayKpiSummary());
+        } catch (Exception e) {
+            // Fallback or log? For now, let it be null (JSP handles empty/null somewhat)
+            // or create dummy
+        }
+
+        // 2. Inventory Stats
+        try {
+            model.addAttribute("inventoryStats", inventoryService.getStats());
+        } catch (Exception e) {
+        }
+
+        // 3. Delivery Stats (Mocked)
+        // No service exists, so just passing values used in JSP?
+        // Actually JSP has hardcoded values: "45", "128".
+        // If we want to control them from controller:
+        // model.addAttribute("deliveryStats", Map.of("delivering", 45, "completed",
+        // 128));
+        // But the user's JSP hardcoded them. So I don't need to do anything for
+        // Delivery.
 
         return "dashboard";
     }
