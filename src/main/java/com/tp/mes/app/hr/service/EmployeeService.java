@@ -8,6 +8,7 @@ import com.tp.mes.app.hr.repository.DepartmentRepository;
 import com.tp.mes.app.hr.repository.EmployeeRepository;
 import com.tp.mes.app.hr.repository.EmployeeRoleRepository;
 import com.tp.mes.app.hr.repository.PositionRepository;
+import com.tp.mes.app.factory.repository.ProductionLineRepository;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -30,17 +31,21 @@ public class EmployeeService {
     private final PositionRepository positionRepository;
     private final RoleAutoAssignService roleAutoAssignService;
 
+    private final ProductionLineRepository productionLineRepository;
+
     public EmployeeService(
             EmployeeRepository employeeRepository,
             EmployeeRoleRepository employeeRoleRepository,
             DepartmentRepository departmentRepository,
             PositionRepository positionRepository,
-            RoleAutoAssignService roleAutoAssignService) {
+            RoleAutoAssignService roleAutoAssignService,
+            com.tp.mes.app.factory.repository.ProductionLineRepository productionLineRepository) {
         this.employeeRepository = employeeRepository;
         this.employeeRoleRepository = employeeRoleRepository;
         this.departmentRepository = departmentRepository;
         this.positionRepository = positionRepository;
         this.roleAutoAssignService = roleAutoAssignService;
+        this.productionLineRepository = productionLineRepository;
     }
 
     // ===== 조회 =====
@@ -55,6 +60,10 @@ public class EmployeeService {
 
     public List<EmployeeListItem> getEmployeesByStatus(String status) {
         return employeeRepository.findByStatus(status);
+    }
+
+    public List<EmployeeListItem> getEmployeesByLineId(String lineId) {
+        return employeeRepository.findByProductionLineId(lineId);
     }
 
     public Optional<Employee> getEmployeeById(String empId) {
@@ -142,5 +151,48 @@ public class EmployeeService {
     public long countActiveEmployeesByDepartment(String departmentId) {
         return employeeRepository.countByDepartment(departmentId);
     }
-}
 
+    // ===== 생산 라인 배정 =====
+
+    @Transactional
+    public EmployeeListItem assignWorkerToLine(String empId, String lineId) {
+        log.info("Assigning employee {} to line {}", empId, lineId);
+        employeeRepository.updateProductionLine(empId, lineId);
+
+        // Update production line worker count
+        productionLineRepository.incrementWorkerCount(lineId);
+
+        return employeeRepository.findListItemById(empId)
+                .orElseThrow(() -> new IllegalStateException("Failed to retrieve assigned employee info"));
+    }
+
+    @Transactional
+    public void removeWorkerFromLine(String empId) {
+        log.info("Removing employee {} from line", empId);
+
+        // Get current line ID before removing
+        employeeRepository.findById(empId).ifPresent(employee -> {
+            if (employee.getProductionLineId() != null) {
+                productionLineRepository.decrementWorkerCount(employee.getProductionLineId());
+            }
+        });
+
+        employeeRepository.updateProductionLine(empId, null);
+    }
+
+    /**
+     * 라인 미배정된 사원 목록 조회
+     * (Using findByProductionLineId("IS NULL") or similar strategy if supported,
+     * otherwise filtering all employees. For now filtering getAllEmployees)
+     */
+    public List<EmployeeListItem> getAvailableWorkers() {
+        // This is not efficient for large datasets but acceptable for this scale
+        // Ideally mapper should support: WHERE production_line_id IS NULL AND
+        // department_id = 'PRODUCTION'
+        return getAllEmployees().stream()
+                .filter(e -> e.getProductionLineId() == null || e.getProductionLineId().isEmpty())
+                // Optionally filter by department if needed, e.g. .filter(e ->
+                // "DEP003".equals(e.getDepartmentId()))
+                .collect(java.util.stream.Collectors.toList());
+    }
+}

@@ -32,4 +32,8 @@ public interface ProductionLineRepository {
     void updateUtilizationRate(String lineId, double utilizationRate);
 
     int countByFactory(String factoryId);
+
+    void incrementWorkerCount(String lineId);
+
+    void decrementWorkerCount(String lineId);
 }

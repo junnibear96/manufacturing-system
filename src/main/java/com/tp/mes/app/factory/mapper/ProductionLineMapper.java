@@ -77,4 +77,14 @@ public interface ProductionLineMapper {
      * 공장별 생산라인 수
      */
     int countByFactory(String factoryId);
+
+    /**
+     * 현재 투입 인원 증가
+     */
+    void incrementWorkerCount(String lineId);
+
+    /**
+     * 현재 투입 인원 감소
+     */
+    void decrementWorkerCount(String lineId);
 }

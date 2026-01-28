@@ -29,9 +29,19 @@ public interface EmployeeMapper {
     List<EmployeeListItem> findByStatus(String status);
 
     /**
+     * 생산라인별 사원 조회
+     */
+    List<EmployeeListItem> findByProductionLineId(String lineId);
+
+    /**
      * ID로 사원 조회
      */
     Optional<Employee> findById(String empId);
+
+    /**
+     * ID로 사원 조회 (리스트 항목용)
+     */
+    Optional<EmployeeListItem> findListItemById(String empId);
 
     /**
      * 사원 등록
@@ -47,4 +57,9 @@ public interface EmployeeMapper {
      * 사원 상태 변경
      */
     void updateStatus(@Param("empId") String empId, @Param("status") String status);
+
+    /**
+     * 사원 생산라인 배정/해제
+     */
+    void updateProductionLine(@Param("empId") String empId, @Param("lineId") String lineId);
 }

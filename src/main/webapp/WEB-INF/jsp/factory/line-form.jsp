@@ -134,20 +134,37 @@
                         <div class="form-container">
                             <div class="form-header">
                                 <h1>⚙️
-                                    <spring:message code="factory.line.form.header" text="생산라인 등록" />
+                                    <c:choose>
+                                        <c:when test="${mode eq 'edit'}">
+                                            <spring:message code="factory.line.form.header.edit" text="생산라인 수정" />
+                                        </c:when>
+                                        <c:otherwise>
+                                            <spring:message code="factory.line.form.header" text="생산라인 등록" />
+                                        </c:otherwise>
+                                    </c:choose>
                                 </h1>
                                 <p>
-                                    <spring:message code="factory.line.form.desc" text="새로운 생산라인을 등록합니다" />
+                                    <c:choose>
+                                        <c:when test="${mode eq 'edit'}">
+                                            <spring:message code="factory.line.form.desc.edit" text="생산라인 정보를 수정합니다" />
+                                        </c:when>
+                                        <c:otherwise>
+                                            <spring:message code="factory.line.form.desc" text="새로운 생산라인을 등록합니다" />
+                                        </c:otherwise>
+                                    </c:choose>
                                 </p>
                             </div>
 
-                            <form method="post" action="/factory/lines">
+                            <form method="post"
+                                action="${mode eq 'edit' ? '/factory/lines/'.concat(line.lineId).concat('/edit') : '/factory/lines'}">
                                 <div class="form-group">
                                     <label>
                                         <spring:message code="factory.line.id" text="라인 ID" /> <span
                                             class="required">*</span>
                                     </label>
-                                    <input type="text" name="lineId" required placeholder="예: LINE001">
+                                    <input type="text" name="lineId" required placeholder="예: LINE001"
+                                        value="${line.lineId}" ${mode eq 'edit'
+                                        ? 'readonly style="background-color: #f7fafc; cursor: not-allowed;"' : '' }>
                                     <div class="help-text">고유 라인 식별자를 입력하세요</div>
                                 </div>
 
@@ -159,7 +176,8 @@
                                     <select name="factoryId" required>
                                         <option value="">공장을 선택하세요</option>
                                         <c:forEach items="${factories}" var="factory">
-                                            <option value="${factory.factoryId}">${factory.factoryName}
+                                            <option value="${factory.factoryId}" ${line.factoryId eq factory.factoryId
+                                                ? 'selected' : '' }>${factory.factoryName}
                                                 (${factory.factoryId})</option>
                                         </c:forEach>
                                     </select>
@@ -171,7 +189,8 @@
                                             <spring:message code="factory.line.name" text="라인명" /> <span
                                                 class="required">*</span>
                                         </label>
-                                        <input type="text" name="lineName" required placeholder="예: 조립 라인 1">
+                                        <input type="text" name="lineName" required placeholder="예: 조립 라인 1"
+                                            value="${line.lineName}">
                                     </div>
 
                                     <div class="form-group">
@@ -181,9 +200,12 @@
                                         </label>
                                         <select name="lineType" required>
                                             <option value="">유형 선택</option>
-                                            <option value="SEMI_AUTO">반자동</option>
-                                            <option value="FULL_AUTO">완전자동</option>
-                                            <option value="MANUAL">수동</option>
+                                            <option value="SEMI_AUTO" ${line.lineType eq 'SEMI_AUTO' ? 'selected' : ''
+                                                }>반자동</option>
+                                            <option value="FULL_AUTO" ${line.lineType eq 'FULL_AUTO' ? 'selected' : ''
+                                                }>완전자동</option>
+                                            <option value="MANUAL" ${line.lineType eq 'MANUAL' ? 'selected' : '' }>수동
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
@@ -193,7 +215,8 @@
                                         <label>
                                             <spring:message code="factory.capacity" text="최대 생산능력 (개/일)" />
                                         </label>
-                                        <input type="number" name="maxCapacity" value="0" min="0">
+                                        <input type="number" name="maxCapacity"
+                                            value="${not empty line.maxCapacity ? line.maxCapacity : 0}" min="0">
                                         <div class="help-text">일일 최대 생산 가능 수량</div>
                                     </div>
 
@@ -201,7 +224,9 @@
                                         <label>
                                             <spring:message code="factory.workers" text="표준 작업 인원" />
                                         </label>
-                                        <input type="number" name="standardWorkers" value="0" min="0">
+                                        <input type="number" name="standardWorkers"
+                                            value="${not empty line.standardWorkers ? line.standardWorkers : 0}"
+                                            min="0">
                                         <div class="help-text">정상 운영 시 필요 인원</div>
                                     </div>
                                 </div>
@@ -211,9 +236,11 @@
                                         <spring:message code="factory.status" text="초기 상태" />
                                     </label>
                                     <select name="status">
-                                        <option value="STOPPED" selected>정지</option>
-                                        <option value="IDLE">대기</option>
-                                        <option value="RUNNING">가동</option>
+                                        <option value="STOPPED" ${line.status eq 'STOPPED' ? 'selected' : '' }>정지
+                                        </option>
+                                        <option value="IDLE" ${line.status eq 'IDLE' ? 'selected' : '' }>대기</option>
+                                        <option value="RUNNING" ${line.status eq 'RUNNING' ? 'selected' : '' }>가동
+                                        </option>
                                     </select>
                                     <div class="help-text">라인의 초기 운영 상태를 선택하세요</div>
                                 </div>
@@ -223,7 +250,14 @@
                                         <spring:message code="common.cancel" text="취소" />
                                     </a>
                                     <button type="submit" class="btn btn-primary">
-                                        <spring:message code="common.register" text="등록" />
+                                        <c:choose>
+                                            <c:when test="${mode eq 'edit'}">
+                                                <spring:message code="common.update" text="수정" />
+                                            </c:when>
+                                            <c:otherwise>
+                                                <spring:message code="common.register" text="등록" />
+                                            </c:otherwise>
+                                        </c:choose>
                                     </button>
                                 </div>
                             </form>

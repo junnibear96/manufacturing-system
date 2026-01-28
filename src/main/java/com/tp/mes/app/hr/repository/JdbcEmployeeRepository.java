@@ -72,9 +72,35 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
     }
 
     @Override
+    public List<EmployeeListItem> findByProductionLineId(String lineId) {
+        try {
+            return employeeMapper.findByProductionLineId(lineId);
+        } catch (DataAccessException ex) {
+            if (OracleErrorSupport.isMissingTableOrView(ex)) {
+                log.warn("employees table not found");
+                return List.of();
+            }
+            throw ex;
+        }
+    }
+
+    @Override
     public Optional<Employee> findById(String empId) {
         try {
             return employeeMapper.findById(empId);
+        } catch (DataAccessException ex) {
+            if (OracleErrorSupport.isMissingTableOrView(ex)) {
+                log.warn("employees table not found");
+                return Optional.empty();
+            }
+            throw ex;
+        }
+    }
+
+    @Override
+    public Optional<EmployeeListItem> findListItemById(String empId) {
+        try {
+            return employeeMapper.findListItemById(empId);
         } catch (DataAccessException ex) {
             if (OracleErrorSupport.isMissingTableOrView(ex)) {
                 log.warn("employees table not found");
@@ -130,6 +156,18 @@ public class JdbcEmployeeRepository implements EmployeeRepository {
         } catch (DataAccessException ex) {
             if (OracleErrorSupport.isMissingTableOrView(ex)) {
                 log.error("employees table not found. Cannot change status.");
+            }
+            throw ex;
+        }
+    }
+
+    @Override
+    public void updateProductionLine(String empId, String lineId) {
+        try {
+            employeeMapper.updateProductionLine(empId, lineId);
+        } catch (DataAccessException ex) {
+            if (OracleErrorSupport.isMissingTableOrView(ex)) {
+                log.error("employees table not found. Cannot update production line.");
             }
             throw ex;
         }

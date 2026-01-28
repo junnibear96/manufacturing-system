@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +26,14 @@ public class FactoryController {
 
     private final FactoryService factoryService;
     private final com.tp.mes.app.factory.service.ProductionLineService productionLineService;
+    private final com.tp.mes.app.hr.service.EmployeeService employeeService;
 
     public FactoryController(FactoryService factoryService,
-            com.tp.mes.app.factory.service.ProductionLineService productionLineService) {
+            com.tp.mes.app.factory.service.ProductionLineService productionLineService,
+            com.tp.mes.app.hr.service.EmployeeService employeeService) {
         this.factoryService = factoryService;
         this.productionLineService = productionLineService;
+        this.employeeService = employeeService;
     }
 
     // ========== 대시보드 ==========
@@ -404,5 +408,121 @@ public class FactoryController {
         }
 
         return "redirect:/factory/lines";
+    }
+
+    /**
+     * 생산라인 수정 폼
+     */
+    @GetMapping("/lines/{lineId}/edit")
+    public String lineEditForm(@PathVariable String lineId, Model model) {
+        ProductionLine line = factoryService.getLineById(lineId)
+                .orElseThrow(() -> new IllegalArgumentException("생산라인을 찾을 수 없습니다: " + lineId));
+
+        List<Factory> factories = factoryService.getAllFactories();
+
+        model.addAttribute("line", line);
+        model.addAttribute("factories", factories);
+        model.addAttribute("mode", "edit");
+
+        return "factory/line-form";
+    }
+
+    /**
+     * 생산라인 수정 처리
+     */
+    @PostMapping("/lines/{lineId}/edit")
+    public String updateLine(
+            @PathVariable String lineId,
+            @RequestParam String factoryId,
+            @RequestParam String lineName,
+            @RequestParam String lineType,
+            @RequestParam String status,
+            @RequestParam(defaultValue = "0") Integer maxCapacity,
+            @RequestParam(defaultValue = "0") Integer standardWorkers,
+            RedirectAttributes redirectAttributes) {
+
+        ProductionLine existing = factoryService.getLineById(lineId)
+                .orElseThrow(() -> new IllegalArgumentException("생산라인을 찾을 수 없습니다: " + lineId));
+
+        ProductionLine updated = new ProductionLine();
+        updated.setLineId(lineId);
+        updated.setFactoryId(factoryId);
+        updated.setLineName(lineName);
+        updated.setLineType(lineType);
+        updated.setStatus(status);
+        updated.setMaxCapacity(maxCapacity);
+        updated.setStandardWorkers(standardWorkers);
+
+        // fields that are not updated by this form but need to be preserved or handled
+        updated.setIsOperating(existing.getIsOperating()); // preserve operating state
+        updated.setTaktTime(existing.getTaktTime());
+        updated.setCycleTime(existing.getCycleTime());
+        updated.setUtilizationRate(existing.getUtilizationRate());
+        updated.setUtilizationRateDecimal(existing.getUtilizationRateDecimal());
+        updated.setCurrentWorkers(existing.getCurrentWorkers());
+
+        factoryService.updateLine(updated);
+
+        redirectAttributes.addFlashAttribute("message", "생산라인 정보가 수정되었습니다: " + lineName);
+        return "redirect:/factory/lines";
+    }
+
+    /**
+     * 라인 투입 인원 조회 (API)
+     */
+    @GetMapping("/lines/{lineId}/workers")
+    @ResponseBody
+    public List<com.tp.mes.app.hr.model.EmployeeListItem> getLineWorkers(@PathVariable String lineId) {
+        return employeeService.getEmployeesByLineId(lineId);
+    }
+
+    /**
+     * 배정 가능한 사원 목록 조회 (API)
+     */
+    @GetMapping("/lines/available-workers")
+    @ResponseBody
+    public List<com.tp.mes.app.hr.model.EmployeeListItem> getAvailableWorkers() {
+        return employeeService.getAvailableWorkers();
+    }
+
+    /**
+     * 라인에 사원 배정 (API)
+     */
+    @PostMapping("/lines/{lineId}/workers")
+    @ResponseBody
+    public ResponseEntity<java.util.Map<String, Object>> assignWorker(@PathVariable String lineId,
+            @RequestBody java.util.Map<String, String> body) {
+        String empId = body.get("empId");
+        if (empId == null || empId.isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body(java.util.Collections.singletonMap("error", "Employee ID is required"));
+        }
+
+        try {
+            com.tp.mes.app.hr.model.EmployeeListItem worker = employeeService.assignWorkerToLine(empId, lineId);
+            java.util.Map<String, Object> response = new java.util.HashMap<>();
+            response.put("message", "Worker assigned successfully");
+            response.put("worker", worker);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(java.util.Collections.singletonMap("error", "Failed to assign worker: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * 라인에서 사원 제외 (API)
+     */
+    @DeleteMapping("/lines/{lineId}/workers/{empId}")
+    @ResponseBody
+    public ResponseEntity<java.util.Map<String, String>> removeWorker(@PathVariable String lineId,
+            @PathVariable String empId) {
+        try {
+            employeeService.removeWorkerFromLine(empId);
+            return ResponseEntity.ok(java.util.Collections.singletonMap("message", "Worker removed successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(java.util.Collections.singletonMap("error", "Failed to remove worker: " + e.getMessage()));
+        }
     }
 }

@@ -525,8 +525,7 @@
                                 <spring:message code="production.equipment.header" text="장비 관리" />
                             </h1>
                             <p class="subtitle">
-                                <spring:message code="production.equipment.subtitle"
-                                    text="공정 내 설비 상태 관리 및 점검 이력 기록" />
+                                <spring:message code="production.equipment.subtitle" text="공정 내 설비 상태 관리 및 점검 이력 기록" />
                             </p>
                         </div>
 
@@ -578,8 +577,7 @@
                                             <spring:message code="production.equipment.table.rate" text="가동률" />
                                         </th>
                                         <th>
-                                            <spring:message code="production.equipment.table.lastCheck"
-                                                text="최근 점검" />
+                                            <spring:message code="production.equipment.table.lastCheck" text="최근 점검" />
                                         </th>
                                         <th>
                                             <spring:message code="common.action" text="관리" />
@@ -596,9 +594,17 @@
                                             <td>${item.equipmentName}</td>
                                             <td>${item.lineId}</td>
                                             <td>
-                                                <span class="status-badge status-${item.status.name().toLowerCase()}">
-                                                    ${item.status.description}
-                                                </span>
+                                                <c:if test="${item.status != null}">
+                                                    <span
+                                                        class="status-badge status-${item.status.name().toLowerCase()}">
+                                                        ${item.status.description}
+                                                    </span>
+                                                </c:if>
+                                                <c:if test="${item.status == null}">
+                                                    <span class="status-badge status-stopped">
+                                                        <spring:message code="common.unknown" text="알 수 없음" />
+                                                    </span>
+                                                </c:if>
                                             </td>
                                             <td>
                                                 <c:if test="${item.utilizationRate != null}">
@@ -629,7 +635,7 @@
                                                 <c:if test="${item.status == 'ERROR' || item.status == 'MAINTENANCE'}">
                                                     <button class="btn btn-primary btn-sm"
                                                         style="background-color: #cbd5e0; cursor: not-allowed;" disabled
-                                                        title="<spring:message code='production.equipment.tooltip.cantRun' default='점검 또는 수리 중에는 가동할 수 없습니다.'/>">
+                                                        title="<spring:message code='production.equipment.tooltip.cantRun' text='점검 또는 수리 중에는 가동할 수 없습니다.'/>">
                                                         <spring:message code="production.action.run" text="가동" />
                                                     </button>
                                                 </c:if>
@@ -641,7 +647,9 @@
                                                 </c:if>
 
                                                 <button class="btn btn-maintenance btn-sm"
-                                                    onclick="openHistoryModal('${item.equipmentId}', '${item.equipmentName}', '${item.status}', '${item.status.description}')">
+                                                    onclick="openHistoryModal('${item.equipmentId}', '${item.equipmentName}', '${item.status != null ? item.status : "
+                                                    STOPPED"}', '${item.status != null ? item.status.description : "알 수 없음"}'
+                                                    )">
                                                     <spring:message code="production.action.history" text="점검 기록" />
                                                 </button>
                                             </td>
@@ -677,8 +685,7 @@
                                 <!-- Status Update Section -->
                                 <div class="modal-section">
                                     <div class="modal-section-title">📊
-                                        <spring:message code="production.equipment.modal.changeStatus"
-                                            text="상태 변경" />
+                                        <spring:message code="production.equipment.modal.changeStatus" text="상태 변경" />
                                     </div>
                                     <div class="status-control-group">
                                         <select id="modalStatusSelect" class="form-control" style="flex:1;">
@@ -693,15 +700,14 @@
                                 <!-- New Record Section -->
                                 <div class="modal-section">
                                     <div class="modal-section-title">📝
-                                        <spring:message code="production.equipment.modal.addRecord"
-                                            text="점검 기록 추가" />
+                                        <spring:message code="production.equipment.modal.addRecord" text="점검 기록 추가" />
                                     </div>
                                     <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                                         <input type="text" id="recordWorker" class="form-control"
-                                            placeholder="<spring:message code='production.equipment.placeholder.worker' default='작업자'/>"
+                                            placeholder="<spring:message code='production.equipment.placeholder.worker' text='작업자'/>"
                                             style="width: 120px;">
                                         <input type="text" id="recordDescription" class="form-control"
-                                            placeholder="<spring:message code='production.equipment.placeholder.description' default='점검 내용 / 특이사항'/>"
+                                            placeholder="<spring:message code='production.equipment.placeholder.description' text='점검 내용 / 특이사항'/>"
                                             style="flex: 1;">
                                     </div>
                                     <div style="text-align: right;">

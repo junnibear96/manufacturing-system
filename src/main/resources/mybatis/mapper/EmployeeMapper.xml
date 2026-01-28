@@ -43,6 +43,7 @@
         <result property="positionName" column="position_name"/>
         <result property="status" column="status"/>
         <result property="jobType" column="job_type"/>
+        <result property="productionLineId" column="production_line_id"/>
     </resultMap>
 
     <!-- 모든 사원 조회 (부서명, 직급명 포함) -->
@@ -51,7 +52,8 @@
                TO_CHAR(e.hire_date, 'YYYY-MM-DD') as hire_date,
                e.department_id, d.dept_name,
                e.position_id, p.position_name,
-               e.status, e.job_type
+               e.status, e.job_type,
+               e.production_line_id
         FROM employees e
         LEFT JOIN departments d ON e.department_id = d.department_id
         LEFT JOIN positions p ON e.position_id = p.position_id
@@ -64,7 +66,8 @@
                TO_CHAR(e.hire_date, 'YYYY-MM-DD') as hire_date,
                e.department_id, d.dept_name,
                e.position_id, p.position_name,
-               e.status, e.job_type
+               e.status, e.job_type,
+               e.production_line_id
         FROM employees e
         LEFT JOIN departments d ON e.department_id = d.department_id
         LEFT JOIN positions p ON e.position_id = p.position_id
@@ -78,7 +81,8 @@
                TO_CHAR(e.hire_date, 'YYYY-MM-DD') as hire_date,
                e.department_id, d.dept_name,
                e.position_id, p.position_name,
-               e.status, e.job_type
+               e.status, e.job_type,
+               e.production_line_id
         FROM employees e
         LEFT JOIN departments d ON e.department_id = d.department_id
         LEFT JOIN positions p ON e.position_id = p.position_id
@@ -86,9 +90,38 @@
         ORDER BY e.created_at DESC
     </select>
 
+    <!-- 생산라인별 사원 조회 -->
+    <select id="findByProductionLineId" parameterType="string" resultMap="EmployeeListItemResultMap">
+        SELECT e.emp_id, e.emp_name, e.email, e.phone,
+               TO_CHAR(e.hire_date, 'YYYY-MM-DD') as hire_date,
+               e.department_id, d.dept_name,
+               e.position_id, p.position_name,
+               e.status, e.job_type,
+               e.production_line_id
+        FROM employees e
+        LEFT JOIN departments d ON e.department_id = d.department_id
+        LEFT JOIN positions p ON e.position_id = p.position_id
+        WHERE e.production_line_id = #{lineId} AND e.status = 'ACTIVE'
+        ORDER BY e.emp_name
+    </select>
+
     <!-- ID로 사원 조회 -->
     <select id="findById" parameterType="string" resultMap="EmployeeResultMap">
         SELECT * FROM employees e WHERE emp_id = #{empId}
+    </select>
+    
+    <!-- ID로 사원 목록 아이템 조회 -->
+    <select id="findListItemById" parameterType="string" resultMap="EmployeeListItemResultMap">
+        SELECT e.emp_id, e.emp_name, e.email, e.phone,
+               TO_CHAR(e.hire_date, 'YYYY-MM-DD') as hire_date,
+               e.department_id, d.dept_name,
+               e.position_id, p.position_name,
+               e.status, e.job_type,
+               e.production_line_id
+        FROM employees e
+        LEFT JOIN departments d ON e.department_id = d.department_id
+        LEFT JOIN positions p ON e.position_id = p.position_id
+        WHERE e.emp_id = #{empId}
     </select>
 
     <!-- 사원 등록 -->
@@ -128,7 +161,16 @@
 
     <!-- 사원 상태 변경 -->
     <update id="updateStatus">
-        UPDATE employees SET status = #{status}, updated_at = CURRENT_TIMESTAMP
+        UPDATE employees
+        SET status = #{status},
+            updated_at = SYSDATE
+        WHERE emp_id = #{empId}
+    </update>
+
+    <update id="updateProductionLine">
+        UPDATE employees
+        SET production_line_id = #{lineId},
+            updated_at = SYSDATE
         WHERE emp_id = #{empId}
     </update>
 

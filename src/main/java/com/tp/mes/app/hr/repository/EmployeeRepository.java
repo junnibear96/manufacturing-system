@@ -12,7 +12,14 @@ public interface EmployeeRepository {
 
     List<EmployeeListItem> findByStatus(String status);
 
+    /**
+     * 생산라인별 사원 조회
+     */
+    List<EmployeeListItem> findByProductionLineId(String lineId);
+
     Optional<Employee> findById(String empId);
+
+    Optional<EmployeeListItem> findListItemById(String empId);
 
     long countByDepartment(String departmentId);
 
@@ -20,5 +27,13 @@ public interface EmployeeRepository {
 
     void update(Employee employee);
 
+    /**
+     * 사원 상태 변경
+     */
     void updateStatus(String empId, String status, String terminationReason);
+
+    /**
+     * 사원 생산라인 배정/해제
+     */
+    void updateProductionLine(String empId, String lineId);
 }

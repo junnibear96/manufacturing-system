@@ -24,6 +24,8 @@
     </div>
 </footer>
 
+<script src="/assets/js/common-api.js"></script>
+
 <style>
 .modern-footer {
     background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);

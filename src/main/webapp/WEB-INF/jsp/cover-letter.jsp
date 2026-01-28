@@ -609,13 +609,6 @@
                         </h2>
                         <div class="description">
                             <p style="margin-bottom: 10px;">
-                                <a href="https://github.com/junnibear96/lotto_number_maker" target="_blank"
-                                    style="color: #3498db;">
-                                    ►
-                                    <spring:message code="coverletter.portfolio.lotto" />
-                                </a>
-                            </p>
-                            <p style="margin-bottom: 10px;">
                                 <a href="https://github.com/junnibear96/dividend_planner" target="_blank"
                                     style="color: #3498db;">
                                     ►
@@ -627,6 +620,13 @@
                                     style="color: #3498db;">
                                     ►
                                     <spring:message code="coverletter.portfolio.donation" />
+                                </a>
+                            </p>
+                            <p style="margin-bottom: 10px;">
+                                <a href="https://github.com/junnibear96/lotto_number_maker" target="_blank"
+                                    style="color: #3498db;">
+                                    ►
+                                    <spring:message code="coverletter.portfolio.lotto" />
                                 </a>
                             </p>
                         </div>

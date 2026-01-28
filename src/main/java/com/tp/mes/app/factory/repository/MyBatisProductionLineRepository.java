@@ -132,4 +132,14 @@ public class MyBatisProductionLineRepository implements ProductionLineRepository
             throw ex;
         }
     }
+
+    @Override
+    public void incrementWorkerCount(String lineId) {
+        productionLineMapper.incrementWorkerCount(lineId);
+    }
+
+    @Override
+    public void decrementWorkerCount(String lineId) {
+        productionLineMapper.decrementWorkerCount(lineId);
+    }
 }

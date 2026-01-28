@@ -10,6 +10,10 @@ public class ProductionLine {
     private String lineName; // 라인명
     private String lineCode; // 라인 코드
 
+    // Display Fields (Transient)
+    private String plantName; // 사업장명
+    private String factoryName; // 공장명
+
     // 라인 정보
     private String lineType; // 라인 유형 (MANUAL, SEMI_AUTO, FULL_AUTO)
     private String status; // 운영 상태 (RUNNING, STOPPED, IDLE, MAINTENANCE, ERROR)
@@ -103,6 +107,22 @@ public class ProductionLine {
 
     public void setLineCode(String lineCode) {
         this.lineCode = lineCode;
+    }
+
+    public String getPlantName() {
+        return plantName;
+    }
+
+    public void setPlantName(String plantName) {
+        this.plantName = plantName;
+    }
+
+    public String getFactoryName() {
+        return factoryName;
+    }
+
+    public void setFactoryName(String factoryName) {
+        this.factoryName = factoryName;
     }
 
     public String getLineType() {
