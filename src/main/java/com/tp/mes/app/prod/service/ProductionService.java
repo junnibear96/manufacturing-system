@@ -19,6 +19,10 @@ public interface ProductionService {
 
   boolean deletePlan(long planId);
 
+  ProdPlanItem getPlan(long planId);
+
+  boolean updatePlan(long planId, String planDate, String itemCode, String qtyPlan, Long updatedBy);
+
   List<ProdResultItem> listResults();
 
   long createResult(String workDate, String itemCode, String qtyGood, String qtyNg, Long equipmentId, Long createdBy);

@@ -19,6 +19,10 @@ public interface ProductionRepository {
 
   boolean deletePlan(long planId);
 
+  ProdPlanItem getPlan(long planId);
+
+  boolean updatePlan(long planId, String planDate, String itemCode, String qtyPlan, Long updatedBy);
+
   List<ProdResultItem> listResults();
 
   long insertResult(String workDate, String itemCode, String qtyGood, String qtyNg, Long equipmentId, Long createdBy);
@@ -28,4 +32,6 @@ public interface ProductionRepository {
   List<QtyStatRow> dailyStatsLast14Days();
 
   List<QtyStatRow> monthlyStatsThisYear();
+
+  List<com.tp.mes.app.prod.model.DailyProductionSummary> getDailySummary(String date);
 }

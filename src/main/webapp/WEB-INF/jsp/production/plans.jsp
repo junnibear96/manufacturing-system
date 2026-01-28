@@ -107,7 +107,7 @@
                             <th>
                               <spring:message code="common.created" text="생성일시" />
                             </th>
-                            <sec:authorize access="hasRole('ADMIN')">
+                            <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
                               <th style="text-align: center;">
                                 <spring:message code="common.action" text="관리" />
                               </th>
@@ -135,18 +135,29 @@
                               <td style="color: #718096; font-size: 14px;">
                                 ${plan.createdAt}
                               </td>
-                              <sec:authorize access="hasRole('ADMIN')">
+                              <sec:authorize access="hasAnyRole('MANAGER', 'ADMIN')">
                                 <td style="text-align: center;">
-                                  <form method="post"
-                                    action="${pageContext.request.contextPath}/production/plans/delete"
-                                    style="display: inline;" onsubmit="return confirm('<spring:message code="
-                                    production.plans.delete.confirm" text="이 계획을 삭제하시겠습니까?" />');">
-                                  <input type="hidden" name="planId" value="${plan.planId}" />
-                                  <button type="submit" class="btn btn-sm"
-                                    style="background: #fff5f5; color: #e53e3e; border: 1px solid #fed7d7;">
-                                    <spring:message code="common.delete" text="삭제" />
-                                  </button>
-                                  </form>
+                                  <div style="display: flex; gap: 8px; justify-content: center;">
+                                    <a href="${pageContext.request.contextPath}/production/plans/${plan.planId}/edit"
+                                      class="btn btn-sm"
+                                      style="background: #edf2f7; color: #4a5568; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-weight: 600; transition: all 0.2s;">
+                                      <spring:message code="common.edit" text="수정" />
+                                    </a>
+
+                                    <sec:authorize access="hasRole('ADMIN')">
+                                      <form method="post"
+                                        action="${pageContext.request.contextPath}/production/plans/delete"
+                                        onsubmit="return confirm('<spring:message code="
+                                        production.plans.delete.confirm" text="이 계획을 삭제하시겠습니까?" />');"
+                                      style="margin: 0;">
+                                      <input type="hidden" name="planId" value="${plan.planId}" />
+                                      <button type="submit" class="btn btn-sm"
+                                        style="background: #fff5f5; color: #e53e3e; border: 1px solid #fed7d7; padding: 6px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+                                        <spring:message code="common.delete" text="삭제" />
+                                      </button>
+                                      </form>
+                                    </sec:authorize>
+                                  </div>
                                 </td>
                               </sec:authorize>
                             </tr>

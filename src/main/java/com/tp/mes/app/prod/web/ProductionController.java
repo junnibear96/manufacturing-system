@@ -78,6 +78,30 @@ public class ProductionController {
     return "redirect:/production/plans";
   }
 
+  @GetMapping("/production/plans/{planId}/edit")
+  public String editPlanForm(@org.springframework.web.bind.annotation.PathVariable("planId") long planId, Model model) {
+    com.tp.mes.app.prod.model.ProdPlanItem plan = service.getPlan(planId);
+    if (plan == null) {
+      return "redirect:/production/plans?error=notfound";
+    }
+    model.addAttribute("plan", plan);
+    model.addAttribute("items", inventoryService.getAllItems());
+    return "production/production-plan-edit";
+  }
+
+  @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+  @PostMapping("/production/plans/{planId}/edit")
+  public String updatePlan(
+      @org.springframework.web.bind.annotation.PathVariable("planId") long planId,
+      @RequestParam("planDate") String planDate,
+      @RequestParam("itemCode") String itemCode,
+      @RequestParam("qtyPlan") String qtyPlan,
+      org.springframework.security.core.Authentication authentication) {
+    Long updatedBy = 1L; // Fallback
+    service.updatePlan(planId, planDate, itemCode, qtyPlan, updatedBy);
+    return "redirect:/production/plans";
+  }
+
   @GetMapping("/admin/production/results/new")
   public String newResultForm(Model model) {
     model.addAttribute("workDate", "");

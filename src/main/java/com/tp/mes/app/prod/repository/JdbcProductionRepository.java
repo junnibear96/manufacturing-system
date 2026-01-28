@@ -131,6 +131,43 @@ public class JdbcProductionRepository implements ProductionRepository {
   }
 
   @Override
+  public ProdPlanItem getPlan(long planId) {
+    try {
+      return jdbcTemplate.queryForObject(
+          "select plan_id, to_char(plan_date, 'YYYY-MM-DD') as plan_date, item_code, "
+              + "to_char(qty_plan) as qty_plan, to_char(created_at, 'YYYY-MM-DD HH24:MI') as created_at "
+              + "from production_plan where plan_id = ?",
+          (rs, rowNum) -> new ProdPlanItem(
+              rs.getLong("plan_id"),
+              rs.getString("plan_date"),
+              rs.getString("item_code"),
+              rs.getString("qty_plan"),
+              rs.getString("created_at")),
+          planId);
+    } catch (DataAccessException ex) {
+      if (OracleErrorSupport.isMissingTableOrView(ex)) {
+        return null;
+      }
+      throw ex;
+    }
+  }
+
+  @Override
+  public boolean updatePlan(long planId, String planDate, String itemCode, String qtyPlan, Long updatedBy) {
+    try {
+      return jdbcTemplate.update(
+          "update production_plan set plan_date = TO_DATE(?, 'YYYY-MM-DD'), item_code = ?, qty_plan = ? "
+              + "where plan_id = ?",
+          planDate, itemCode, qtyPlan, planId) == 1;
+    } catch (DataAccessException ex) {
+      if (OracleErrorSupport.isMissingTableOrView(ex)) {
+        return false;
+      }
+      throw ex;
+    }
+  }
+
+  @Override
   public List<ProdResultItem> listResults() {
     try {
       return jdbcTemplate.query(
@@ -220,6 +257,46 @@ public class JdbcProductionRepository implements ProductionRepository {
         return List.of(new QtyStatRow("-", "0", "0", "0"));
       }
       throw ex;
+    }
+  }
+
+  @Override
+  public List<com.tp.mes.app.prod.model.DailyProductionSummary> getDailySummary(String date) {
+    try {
+      String sql = "WITH plans AS (" +
+          "  SELECT item_code, SUM(qty_plan) as total_plan " +
+          "  FROM production_plan WHERE TRUNC(plan_date) = TO_DATE(?, 'YYYY-MM-DD') GROUP BY item_code" +
+          "), results AS (" +
+          "  SELECT item_code, SUM(qty_good) as total_good, SUM(qty_ng) as total_ng " +
+          "  FROM production_result WHERE TRUNC(work_date) = TO_DATE(?, 'YYYY-MM-DD') GROUP BY item_code" +
+          ") " +
+          "SELECT COALESCE(p.item_code, r.item_code) as item_code, " +
+          "       MAX(i.item_name) as item_name, " +
+          "       NVL(p.total_plan, 0) as target_qty, " +
+          "       NVL(r.total_good, 0) as actual_qty, " +
+          "       NVL(r.total_ng, 0) as ng_qty " +
+          "FROM plans p " +
+          "FULL OUTER JOIN results r ON p.item_code = r.item_code " +
+          "LEFT JOIN tp_inventory i ON COALESCE(p.item_code, r.item_code) = i.item_code " +
+          "ORDER BY item_code";
+
+      return jdbcTemplate.query(sql, (rs, rowNum) -> {
+        double plan = rs.getDouble("target_qty");
+        double actual = rs.getDouble("actual_qty");
+        String rate = plan > 0 ? String.format("%.1f", (actual / plan) * 100) : "0.0";
+
+        return new com.tp.mes.app.prod.model.DailyProductionSummary(
+            date,
+            "-",
+            rs.getString("item_code"),
+            rs.getString("item_name"),
+            String.valueOf((int) plan),
+            String.valueOf((int) actual),
+            rs.getString("ng_qty"),
+            rate);
+      }, date, date);
+    } catch (DataAccessException ex) {
+      return java.util.Collections.emptyList();
     }
   }
 

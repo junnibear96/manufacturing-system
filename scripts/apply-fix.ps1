@@ -11,7 +11,7 @@ $dbUser = "ADMIN"
 $dbPass = "NVdh49CQE3gFMWtb0ebJ"
 
 # Read SQL file
-$sqlFile = "scripts\fix-null-status.sql"
+$sqlFile = "scripts\analytics-schema.sql"
 if (-not (Test-Path $sqlFile)) {
     Write-Host "ERROR: SQL file not found: $sqlFile" -ForegroundColor Red
     exit 1
