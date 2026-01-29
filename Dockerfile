@@ -31,7 +31,7 @@ FROM tomcat:10.1-jdk17-temurin-jammy
 RUN rm -rf /usr/local/tomcat/webapps/ROOT
 
 # Copy the WAR file to the webapps directory as ROOT.war
-COPY --from=build /app/target/TP.war /usr/local/tomcat/webapps/ROOT.war
+COPY --from=build /app/target/MES.war /usr/local/tomcat/webapps/ROOT.war
 
 # Copy wallet files (required for Oracle connection)
 COPY --from=build /app/wallet /app/wallet
