@@ -500,316 +500,293 @@
 
             <body>
                 <!-- Sticky Header -->
-                <header class="factory-header">
-                    <div class="header-container">
-                        <div class="header-left">
-                            <a href="/dashboard" class="logo">
-                                <span class="logo-icon">🏭</span>
-                                <span class="logo-text">MES</span>
-                            </a>
-                            <nav class="main-nav">
-                                <a href="/factory" class="nav-link active">공장관리</a>
-                                <a href="/production/dashboard" class="nav-link">생산현황</a>
-                                <a href="/inventory" class="nav-link">재고현황</a>
-                            </nav>
-                        </div>
-                        <div class="header-right">
-                            <select class="lang-selector">
-                                <option value="ko">KOR</option>
-                                <option value="en">ENG</option>
-                            </select>
-                            <div class="user-menu">
-                                <span class="user-name">관리자</span>
-                                <a href="/logout" class="btn-logout">로그아웃</a>
-                            </div>
-                        </div>
-                    </div>
-                </header>
+                <%@ include file="/WEB-INF/jsp/app/_appHeader.jspf" %>
 
-                <style>
-                    .factory-header {
-                        background: rgba(255, 255, 255, 0.98);
-                        backdrop-filter: blur(10px);
-                        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-                        position: sticky;
-                        top: 0;
-                        z-index: 100;
-                        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-                    }
-
-                    .header-container {
-                        max-width: 1400px;
-                        margin: 0 auto;
-                        padding: 0 24px;
-                        height: 70px;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                    }
-
-                    .header-left {
-                        display: flex;
-                        align-items: center;
-                        gap: 40px;
-                    }
-
-                    .logo {
-                        display: flex;
-                        align-items: center;
-                        gap: 10px;
-                        text-decoration: none;
-                        font-weight: 700;
-                        font-size: 24px;
-                        color: #1a202c;
-                    }
-
-                    .logo-icon {
-                        font-size: 32px;
-                    }
-
-                    .main-nav {
-                        display: flex;
-                        gap: 8px;
-                    }
-
-                    .nav-link {
-                        padding: 8px 20px;
-                        border-radius: 10px;
-                        text-decoration: none;
-                        color: #4a5568;
-                        font-weight: 500;
-                        font-size: 14px;
-                        transition: all 0.3s;
-                    }
-
-                    .nav-link:hover {
-                        background: #f7fafc;
-                        color: #667eea;
-                    }
-
-                    .nav-link.active {
-                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                        color: white;
-                        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-                    }
-
-                    .header-right {
-                        display: flex;
-                        align-items: center;
-                        gap: 20px;
-                    }
-
-                    .lang-selector {
-                        padding: 8px 16px;
-                        border: 1px solid #e2e8f0;
-                        border-radius: 8px;
-                        background: white;
-                        font-size: 13px;
-                        font-weight: 500;
-                        color: #4a5568;
-                        cursor: pointer;
-                    }
-
-                    .user-menu {
-                        display: flex;
-                        align-items: center;
-                        gap: 16px;
-                    }
-
-                    .user-name {
-                        font-weight: 600;
-                        color: #2d3748;
-                        font-size: 14px;
-                    }
-
-                    .btn-logout {
-                        padding: 8px 16px;
-                        border-radius: 8px;
-                        background: #f7fafc;
-                        color: #718096;
-                        text-decoration: none;
-                        font-size: 13px;
-                        font-weight: 500;
-                        transition: all 0.3s;
-                    }
-
-                    .btn-logout:hover {
-                        background: #bee3f8;
-                        color: #2c5282;
-                    }
-
-                    @media (max-width: 768px) {
-                        .main-nav {
-                            display: none;
+                    <style>
+                        .factory-header {
+                            background: rgba(255, 255, 255, 0.98);
+                            backdrop-filter: blur(10px);
+                            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                            position: sticky;
+                            top: 0;
+                            z-index: 100;
+                            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
                         }
 
                         .header-container {
-                            padding: 0 16px;
+                            max-width: 1400px;
+                            margin: 0 auto;
+                            padding: 0 24px;
+                            height: 70px;
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
                         }
-                    }
-                </style>
+
+                        .header-left {
+                            display: flex;
+                            align-items: center;
+                            gap: 40px;
+                        }
+
+                        .logo {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                            text-decoration: none;
+                            font-weight: 700;
+                            font-size: 24px;
+                            color: #1a202c;
+                        }
+
+                        .logo-icon {
+                            font-size: 32px;
+                        }
+
+                        .main-nav {
+                            display: flex;
+                            gap: 8px;
+                        }
+
+                        .nav-link {
+                            padding: 8px 20px;
+                            border-radius: 10px;
+                            text-decoration: none;
+                            color: #4a5568;
+                            font-weight: 500;
+                            font-size: 14px;
+                            transition: all 0.3s;
+                        }
+
+                        .nav-link:hover {
+                            background: #f7fafc;
+                            color: #667eea;
+                        }
+
+                        .nav-link.active {
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white;
+                            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+                        }
+
+                        .header-right {
+                            display: flex;
+                            align-items: center;
+                            gap: 20px;
+                        }
+
+                        .lang-selector {
+                            padding: 8px 16px;
+                            border: 1px solid #e2e8f0;
+                            border-radius: 8px;
+                            background: white;
+                            font-size: 13px;
+                            font-weight: 500;
+                            color: #4a5568;
+                            cursor: pointer;
+                        }
+
+                        .user-menu {
+                            display: flex;
+                            align-items: center;
+                            gap: 16px;
+                        }
+
+                        .user-name {
+                            font-weight: 600;
+                            color: #2d3748;
+                            font-size: 14px;
+                        }
+
+                        .btn-logout {
+                            padding: 8px 16px;
+                            border-radius: 8px;
+                            background: #f7fafc;
+                            color: #718096;
+                            text-decoration: none;
+                            font-size: 13px;
+                            font-weight: 500;
+                            transition: all 0.3s;
+                        }
+
+                        .btn-logout:hover {
+                            background: #bee3f8;
+                            color: #2c5282;
+                        }
+
+                        @media (max-width: 768px) {
+                            .main-nav {
+                                display: none;
+                            }
+
+                            .header-container {
+                                padding: 0 16px;
+                            }
+                        }
+                    </style>
 
 
-                <div class="container">
-                    <!-- Search Bar -->
-                    <div class="search-container">
-                        <div class="search-wrapper">
-                            <span class="search-icon">🔍</span>
-                            <input type="text" class="search-input" placeholder="사업장 이름, 공장 코드, 생산라인 등을 검색하세요...">
-                        </div>
-                    </div>
-
-                    <div class="page-header">
-                        <h1>
-                            <span>🏭</span>
-                            공장 관리 대시보드
-                        </h1>
-                        <p class="subtitle">제조 실행의 물리적 기준을 관리합니다</p>
-                    </div>
-
-                    <!-- 통계 카드 -->
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-card-header">
-                                <div>
-                                    <div class="stat-label">사업장</div>
-                                    <div class="stat-value">${plants.size()}</div>
-                                    <div class="stat-detail">운영 거점</div>
-                                </div>
-                                <div class="stat-icon">🏢</div>
+                    <div class="container">
+                        <!-- Search Bar -->
+                        <div class="search-container">
+                            <div class="search-wrapper">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" class="search-input" placeholder="사업장 이름, 공장 코드, 생산라인 등을 검색하세요...">
                             </div>
                         </div>
 
-                        <div class="stat-card">
-                            <div class="stat-card-header">
-                                <div>
-                                    <div class="stat-label">공장</div>
-                                    <div class="stat-value">${factories.size()}</div>
-                                    <div class="stat-detail">생산 구역</div>
+                        <div class="page-header">
+                            <h1>
+                                <span>🏭</span>
+                                공장 관리 대시보드
+                            </h1>
+                            <p class="subtitle">제조 실행의 물리적 기준을 관리합니다</p>
+                        </div>
+
+                        <!-- 통계 카드 -->
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-card-header">
+                                    <div>
+                                        <div class="stat-label">사업장</div>
+                                        <div class="stat-value">${plants.size()}</div>
+                                        <div class="stat-detail">운영 거점</div>
+                                    </div>
+                                    <div class="stat-icon">🏢</div>
                                 </div>
-                                <div class="stat-icon">🏭</div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-card-header">
+                                    <div>
+                                        <div class="stat-label">공장</div>
+                                        <div class="stat-value">${factories.size()}</div>
+                                        <div class="stat-detail">생산 구역</div>
+                                    </div>
+                                    <div class="stat-icon">🏭</div>
+                                </div>
+                            </div>
+
+                            <div class="stat-card">
+                                <div class="stat-card-header">
+                                    <div>
+                                        <div class="stat-label">가동 중인 라인</div>
+                                        <div class="stat-value">${runningLines.size()}</div>
+                                        <div class="stat-detail">실시간 생산 중</div>
+                                    </div>
+                                    <div class="stat-icon">⚙️</div>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="stat-card">
-                            <div class="stat-card-header">
-                                <div>
-                                    <div class="stat-label">가동 중인 라인</div>
-                                    <div class="stat-value">${runningLines.size()}</div>
-                                    <div class="stat-detail">실시간 생산 중</div>
-                                </div>
-                                <div class="stat-icon">⚙️</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 사업장 목록 -->
-                    <div class="section">
-                        <h2>📍 사업장 현황</h2>
-                        <c:choose>
-                            <c:when test="${empty plants}">
-                                <div class="empty-state">
-                                    <p>등록된 사업장이 없습니다</p>
-                                    <a href="/factory/plants/new" class="btn btn-primary" style="margin-top: 16px;">
-                                        ➕ 사업장 등록
-                                    </a>
-                                </div>
-                            </c:when>
-                            <c:otherwise>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>사업장 ID</th>
-                                            <th>사업장명</th>
-                                            <th>유형</th>
-                                            <th>위치</th>
-                                            <th>상태</th>
-                                            <th>작업</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach items="${plants}" var="plant">
+                        <!-- 사업장 목록 -->
+                        <div class="section">
+                            <h2>📍 사업장 현황</h2>
+                            <c:choose>
+                                <c:when test="${empty plants}">
+                                    <div class="empty-state">
+                                        <p>등록된 사업장이 없습니다</p>
+                                        <a href="/factory/plants/new" class="btn btn-primary" style="margin-top: 16px;">
+                                            ➕ 사업장 등록
+                                        </a>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <table>
+                                        <thead>
                                             <tr>
-                                                <td><code>${plant.plantId}</code></td>
-                                                <td>
-                                                    <a href="/factory/plants/${plant.plantId}"
-                                                        style="color: #667eea; font-weight: 600;">
-                                                        ${plant.plantName}
-                                                    </a>
-                                                </td>
-                                                <td>${plant.plantType}</td>
-                                                <td>${plant.address}</td>
-                                                <td>
-                                                    <span
-                                                        class="badge badge-${plant.status == 'ACTIVE' ? 'active' : 'stopped'}">
-                                                        ${plant.status}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <a href="/factory/plants/${plant.plantId}">상세보기</a>
-                                                </td>
+                                                <th>사업장 ID</th>
+                                                <th>사업장명</th>
+                                                <th>유형</th>
+                                                <th>위치</th>
+                                                <th>상태</th>
+                                                <th>작업</th>
                                             </tr>
-                                        </c:forEach>
-                                    </tbody>
-                                </table>
-                            </c:otherwise>
-                        </c:choose>
-                    </div>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach items="${plants}" var="plant">
+                                                <tr>
+                                                    <td><code>${plant.plantId}</code></td>
+                                                    <td>
+                                                        <a href="/factory/plants/${plant.plantId}"
+                                                            style="color: #667eea; font-weight: 600;">
+                                                            ${plant.plantName}
+                                                        </a>
+                                                    </td>
+                                                    <td>${plant.plantType}</td>
+                                                    <td>${plant.address}</td>
+                                                    <td>
+                                                        <span
+                                                            class="badge badge-${plant.status == 'ACTIVE' ? 'active' : 'stopped'}">
+                                                            ${plant.status}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <a href="/factory/plants/${plant.plantId}">상세보기</a>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
 
-                    <!-- 가동 중인 라인 -->
-                    <div class="section">
-                        <h2>⚙️ 가동 중인 생산라인</h2>
-                        <c:choose>
-                            <c:when test="${empty runningLines}">
-                                <div class="empty-state">
-                                    <p>현재 가동 중인 생산라인이 없습니다</p>
-                                </div>
-                            </c:when>
-                            <c:otherwise>
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>라인 ID</th>
-                                            <th>라인명</th>
-                                            <th>유형</th>
-                                            <th>투입 인원</th>
-                                            <th>가동률</th>
-                                            <th>상태</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach items="${runningLines}" var="line">
+                        <!-- 가동 중인 라인 -->
+                        <div class="section">
+                            <h2>⚙️ 가동 중인 생산라인</h2>
+                            <c:choose>
+                                <c:when test="${empty runningLines}">
+                                    <div class="empty-state">
+                                        <p>현재 가동 중인 생산라인이 없습니다</p>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <table>
+                                        <thead>
                                             <tr>
-                                                <td><code>${line.lineId}</code></td>
-                                                <td>
-                                                    <a href="/factory/lines" style="color: #667eea; font-weight: 600;">
-                                                        ${line.lineName}
-                                                    </a>
-                                                </td>
-                                                <td>${line.lineType}</td>
-                                                <td>${line.currentWorkers} / ${line.standardWorkers}명</td>
-                                                <td><strong>${line.utilizationRate}%</strong></td>
-                                                <td>
-                                                    <span class="badge badge-running">RUNNING</span>
-                                                </td>
+                                                <th>라인 ID</th>
+                                                <th>라인명</th>
+                                                <th>유형</th>
+                                                <th>투입 인원</th>
+                                                <th>가동률</th>
+                                                <th>상태</th>
                                             </tr>
-                                        </c:forEach>
-                                    </tbody>
-                                </table>
-                            </c:otherwise>
-                        </c:choose>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach items="${runningLines}" var="line">
+                                                <tr>
+                                                    <td><code>${line.lineId}</code></td>
+                                                    <td>
+                                                        <a href="/factory/lines"
+                                                            style="color: #667eea; font-weight: 600;">
+                                                            ${line.lineName}
+                                                        </a>
+                                                    </td>
+                                                    <td>${line.lineType}</td>
+                                                    <td>${line.currentWorkers} / ${line.standardWorkers}명</td>
+                                                    <td><strong>${line.utilizationRate}%</strong></td>
+                                                    <td>
+                                                        <span class="badge badge-running">RUNNING</span>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+
+                        <!-- 빠른 링크 -->
+                        <div class="quick-links">
+                            <a href="/factory/plants" class="btn btn-primary">📍 사업장 관리</a>
+                            <a href="/factory/factories" class="btn btn-primary">🏭 공장 관리</a>
+                            <a href="/factory/lines" class="btn btn-primary">⚙️ 생산라인 관리</a>
+                            <a href="/production/dashboard" class="btn btn-primary">📊 생산관리</a>
+                        </div>
                     </div>
 
-                    <!-- 빠른 링크 -->
-                    <div class="quick-links">
-                        <a href="/factory/plants" class="btn btn-primary">📍 사업장 관리</a>
-                        <a href="/factory/factories" class="btn btn-primary">🏭 공장 관리</a>
-                        <a href="/factory/lines" class="btn btn-primary">⚙️ 생산라인 관리</a>
-                        <a href="/production/dashboard" class="btn btn-primary">📊 생산관리</a>
-                    </div>
-                </div>
-
-                <%@ include file="../include/footer.jspf" %>
+                    <%@ include file="../include/footer.jspf" %>
             </body>
 
             </html>

@@ -21,7 +21,7 @@ public class MaterialUsageService {
         this.materialRepository = materialRepository;
     }
 
-    @Transactional
+    @Transactional(propagation = org.springframework.transaction.annotation.Propagation.REQUIRES_NEW)
     public void deductMaterialsForProduction(String productItemCode, BigDecimal quantityProduced) {
         if (quantityProduced.compareTo(BigDecimal.ZERO) <= 0) {
             return;

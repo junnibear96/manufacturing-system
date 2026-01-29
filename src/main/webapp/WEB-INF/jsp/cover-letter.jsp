@@ -609,7 +609,7 @@
                         </h2>
                         <div class="description">
                             <p style="margin-bottom: 10px;">
-                                <a href="https://github.com/junnibear96/dividend_planner" target="_blank"
+                                <a href="https://dividendplanner-production.up.railway.app/" target="_blank"
                                     style="color: #3498db;">
                                     ►
                                     <spring:message code="coverletter.portfolio.dividend" />
