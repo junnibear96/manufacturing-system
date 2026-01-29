@@ -159,6 +159,32 @@ public class ProductionManagerController {
     }
 
     /**
+     * Update Target Utilization Rate (AJAX)
+     * RBAC: ADMIN only
+     */
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/equipment/{equipmentId}/target-rate")
+    @ResponseBody
+    public String updateTargetUtilizationRate(
+            @PathVariable Long equipmentId,
+            @RequestParam Double targetRate) {
+
+        log.info("Updating equipment {} target utilization rate to {}%", equipmentId, targetRate);
+
+        try {
+            if (targetRate < 0 || targetRate > 100) {
+                return "FAILED: Target rate must be between 0 and 100";
+            }
+
+            equipmentService.updateTargetUtilizationRate(equipmentId, targetRate);
+            return "SUCCESS";
+        } catch (Exception e) {
+            log.error("Failed to update target utilization rate", e);
+            return "FAILED: " + e.getMessage();
+        }
+    }
+
+    /**
      * 분석 리포트 화면
      */
     @GetMapping("/analytics")

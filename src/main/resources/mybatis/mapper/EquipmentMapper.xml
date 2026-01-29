@@ -17,6 +17,7 @@
         <result property="lastMaintenanceAt" column="last_maintenance_at"/>
         <result property="maintenanceInterval" column="maintenance_interval"/>
         <result property="utilizationRate" column="utilization_rate"/>
+        <result property="targetUtilizationRate" column="target_utilization_rate"/>
         <result property="oee" column="oee"/>
         <result property="specifications" column="specifications"/>
         <result property="createdAt" column="created_at"/>
@@ -100,6 +101,13 @@
     <update id="updateUtilizationRate">
         UPDATE tp_equipment 
         SET utilization_rate = #{rate} 
+        WHERE equipment_id = #{equipmentId}
+    </update>
+
+    <!-- 목표 가동률 업데이트 -->
+    <update id="updateTargetUtilizationRate">
+        UPDATE equipment 
+        SET target_utilization_rate = #{rate} 
         WHERE equipment_id = #{equipmentId}
     </update>
     

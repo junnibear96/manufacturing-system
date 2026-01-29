@@ -9,14 +9,12 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductBom {
-    private Long bomId;
-    private String productItemCode;
-    private String materialInventoryId;
-    private BigDecimal quantityRequired;
-    private LocalDateTime createdAt;
-
-    // Transient fields
+public class Material {
+    private String materialId;
     private String materialName;
-    private String materialCode;
+    private BigDecimal currentStock;
+    private String unit;
+    private BigDecimal costPerUnit;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

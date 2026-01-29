@@ -17,6 +17,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@org.springframework.context.annotation.Primary
 public class JdbcProductionRepository implements ProductionRepository {
 
   private static final Logger log = LoggerFactory.getLogger(JdbcProductionRepository.class);

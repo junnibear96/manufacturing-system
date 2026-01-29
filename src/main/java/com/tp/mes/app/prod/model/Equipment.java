@@ -32,7 +32,8 @@ public class Equipment {
     private Integer maintenanceInterval; // 점검 주기 (일)
 
     // 성능 지표
-    private Double utilizationRate; // 가동률 (%)
+    private Double utilizationRate; // 가동률 (%) - 실제 가동률
+    private Double targetUtilizationRate; // 목표 가동률 (%) - 설정 가능
     private Double oee; // Overall Equipment Effectiveness (종합 설비 효율)
 
     // 추가 정보

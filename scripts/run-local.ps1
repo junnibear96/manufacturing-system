@@ -13,6 +13,13 @@ if (Test-Path $EnvFile) {
   & (Join-Path $PSScriptRoot 'load-env.ps1') -EnvFile $EnvFile
 }
 
+# Override TNS_ADMIN for local execution if wallet exists
+$localWallet = Join-Path $root 'wallet'
+if (Test-Path $localWallet) {
+  $env:TNS_ADMIN = $localWallet
+  Write-Host "Overrode TNS_ADMIN to local wallet: $localWallet" -ForegroundColor Cyan
+}
+
 function Get-JavaMajorVersionFromOutput([string]$firstLine) {
   if (-not $firstLine) { return $null }
 

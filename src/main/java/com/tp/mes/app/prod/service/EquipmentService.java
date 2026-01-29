@@ -69,4 +69,9 @@ public interface EquipmentService {
      * 점검 이력 등록
      */
     void addMaintenanceHistory(MaintenanceHistory history);
+
+    /**
+     * 목표 가동률 업데이트
+     */
+    void updateTargetUtilizationRate(Long equipmentId, Double targetRate);
 }

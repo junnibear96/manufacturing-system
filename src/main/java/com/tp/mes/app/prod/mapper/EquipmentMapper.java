@@ -64,4 +64,9 @@ public interface EquipmentMapper {
          * 라인의 평균 가동률 조회
          */
         Double getAverageUtilizationRateByLine(@Param("lineId") String lineId);
+
+        /**
+         * 목표 가동률 업데이트
+         */
+        int updateTargetUtilizationRate(@Param("equipmentId") Long equipmentId, @Param("rate") Double targetRate);
 }

@@ -13,11 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class MaterialUsageService {
 
     private final ProductBomRepository productBomRepository;
-    private final InventoryService inventoryService;
+    private final com.tp.mes.app.inventory.repository.MaterialRepository materialRepository;
 
-    public MaterialUsageService(ProductBomRepository productBomRepository, InventoryService inventoryService) {
+    public MaterialUsageService(ProductBomRepository productBomRepository,
+            com.tp.mes.app.inventory.repository.MaterialRepository materialRepository) {
         this.productBomRepository = productBomRepository;
-        this.inventoryService = inventoryService;
+        this.materialRepository = materialRepository;
     }
 
     @Transactional
@@ -36,19 +37,19 @@ public class MaterialUsageService {
             BigDecimal amountToDeduct = bom.getQuantityRequired().multiply(quantityProduced);
 
             try {
-                inventoryService.issueStock(
-                        bom.getMaterialInventoryId(),
-                        amountToDeduct,
-                        "PRODUCTION",
-                        "PROD-AUTO-" + System.currentTimeMillis(), // Ideally link to Result ID
-                        "SYSTEM");
-                log.info("Deducted {} of material ID {} for product {}", amountToDeduct, bom.getMaterialInventoryId(),
-                        productItemCode);
+                // Using MaterialRepository to deduct stock directly from 'materials' table
+                int updatedRows = materialRepository.deductStock(bom.getMaterialInventoryId(), amountToDeduct);
+
+                if (updatedRows > 0) {
+                    log.info("Deducted {} of material ID {} for product {}", amountToDeduct,
+                            bom.getMaterialInventoryId(),
+                            productItemCode);
+                } else {
+                    log.warn("Failed to deduct material ID {} - Material ID not found", bom.getMaterialInventoryId());
+                }
             } catch (Exception e) {
                 log.error("Failed to deduct material ID {} for product {}: {}", bom.getMaterialInventoryId(),
                         productItemCode, e.getMessage());
-                // Decide whether to throw exception (rollback production result) or just log.
-                // For now, logging to avoid stopping production reporting.
             }
         }
     }

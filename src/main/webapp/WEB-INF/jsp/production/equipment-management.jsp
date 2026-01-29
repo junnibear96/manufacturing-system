@@ -508,6 +508,41 @@
                                     else alert('<spring:message code="common.error.occurred" text="오류가 발생했습니다"/>: ' + data);
                                 });
                         }
+
+                        // Target Rate Modal
+                        function openTargetRateModal(id, name, currentRate) {
+                            document.getElementById('targetRateEquipmentId').value = id;
+                            document.getElementById('targetRateEquipmentName').textContent = name;
+                            document.getElementById('targetRateInput').value = currentRate || 85.0;
+                            document.getElementById('targetRateModal').classList.add('active');
+                        }
+
+                        function closeTargetRateModal() {
+                            document.getElementById('targetRateModal').classList.remove('active');
+                        }
+
+                        function saveTargetRate() {
+                            const id = document.getElementById('targetRateEquipmentId').value;
+                            const rate = parseFloat(document.getElementById('targetRateInput').value);
+
+                            if (isNaN(rate) || rate < 0 || rate > 100) {
+                                alert('<spring:message code="production.equipment.alert.invalidRate" text="목표 가동률은 0~100 사이의 값이어야 합니다."/>');
+                                return;
+                            }
+
+                            if (!confirm('<spring:message code="production.equipment.confirm.updateTargetRate" text="목표 가동률을 변경하시겠습니까?"/>' + ` (${rate}%)`)) return;
+
+                            fetch(`/production/equipment/${id}/target-rate?targetRate=${rate}`, { method: 'POST' })
+                                .then(res => res.text())
+                                .then(data => {
+                                    if (data === 'SUCCESS') {
+                                        alert('<spring:message code="common.success.changed" text="변경되었습니다."/>');
+                                        location.reload();
+                                    } else {
+                                        alert('<spring:message code="common.error" text="오류"/>: ' + data);
+                                    }
+                                });
+                        }
                     </script>
                 </head>
 
@@ -577,6 +612,10 @@
                                             <spring:message code="production.equipment.table.rate" text="가동률" />
                                         </th>
                                         <th>
+                                            <spring:message code="production.equipment.table.targetRate"
+                                                text="목표 가동률" />
+                                        </th>
+                                        <th>
                                             <spring:message code="production.equipment.table.lastCheck" text="최근 점검" />
                                         </th>
                                         <th>
@@ -612,6 +651,13 @@
                                                         pattern="#,##0.0" />%
                                                 </c:if>
                                                 <c:if test="${item.utilizationRate == null}">-</c:if>
+                                            </td>
+                                            <td>
+                                                <c:if test="${item.targetUtilizationRate != null}">
+                                                    <fmt:formatNumber value="${item.targetUtilizationRate}"
+                                                        pattern="#,##0.0" />%
+                                                </c:if>
+                                                <c:if test="${item.targetUtilizationRate == null}">85.0%</c:if>
                                             </td>
                                             <td>
                                                 <c:if test="${item.lastMaintenanceAt != null}">
@@ -657,7 +703,7 @@
                                     </c:forEach>
                                     <c:if test="${empty equipment}">
                                         <tr>
-                                            <td colspan="8" style="text-align: center; padding: 40px; color: #718096;">
+                                            <td colspan="9" style="text-align: center; padding: 40px; color: #718096;">
                                                 <spring:message code="common.noSearchResult" text="검색 결과가 없습니다." />
                                             </td>
                                         </tr>
@@ -740,6 +786,39 @@
                                             <!-- Loaded via AJAX -->
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Target Rate Modal -->
+                    <div id="targetRateModal" class="modal-overlay">
+                        <div class="modal-container" style="max-width: 500px;">
+                            <div class="modal-header">
+                                <div>
+                                    <span class="modal-title" id="targetRateEquipmentName">설비명</span>
+                                </div>
+                                <button class="modal-close" onclick="closeTargetRateModal()">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="targetRateEquipmentId">
+
+                                <div class="modal-section">
+                                    <div class="modal-section-title">🎯
+                                        <spring:message code="production.equipment.modal.targetRate" text="목표 가동률 수정" />
+                                    </div>
+                                    <div style="display: flex; gap: 10px; align-items: center;">
+                                        <input type="number" id="targetRateInput" class="form-control" min="0" max="100"
+                                            step="0.1" placeholder="85.0" style="flex: 1;">
+                                        <span style="font-weight: 600;">%</span>
+                                        <button class="btn btn-primary" onclick="saveTargetRate()">
+                                            <spring:message code="common.save" text="저장" />
+                                        </button>
+                                    </div>
+                                    <p style="margin-top: 12px; color: #718096; font-size: 13px;">
+                                        <spring:message code="production.equipment.help.targetRate"
+                                            text="0 ~ 100 사이의 값을 입력하세요." />
+                                    </p>
                                 </div>
                             </div>
                         </div>

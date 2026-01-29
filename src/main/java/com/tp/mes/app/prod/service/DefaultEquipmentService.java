@@ -118,4 +118,15 @@ public class DefaultEquipmentService implements EquipmentService {
     public void addMaintenanceHistory(com.tp.mes.app.prod.model.MaintenanceHistory history) {
         historyMapper.insert(history);
     }
+
+    @Override
+    @Transactional
+    public void updateTargetUtilizationRate(Long equipmentId, Double targetRate) {
+        log.info("Updating target utilization rate for equipment {}: {}%", equipmentId, targetRate);
+        int updated = equipmentMapper.updateTargetUtilizationRate(equipmentId, targetRate);
+        if (updated == 0) {
+            log.warn("Equipment {} not found", equipmentId);
+            throw new IllegalArgumentException("Equipment not found: " + equipmentId);
+        }
+    }
 }

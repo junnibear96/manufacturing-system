@@ -15,7 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * 인사관리 컨트롤러
- * TEMPORARILY DISABLED - HRM system being reimplemented
  */
 @Controller
 @RequestMapping("/hr")
@@ -210,4 +209,3 @@ public class HrController {
         return "redirect:/hr/employees/" + empId;
     }
 }
-

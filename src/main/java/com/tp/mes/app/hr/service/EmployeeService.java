@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 인사관리 서비스
- * TEMPORARILY DISABLED - HRM system being reimplemented
  */
 @Service
 public class EmployeeService {
