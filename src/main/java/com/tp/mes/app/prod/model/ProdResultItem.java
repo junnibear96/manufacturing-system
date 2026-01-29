@@ -9,16 +9,15 @@ public class ProdResultItem {
   private final String qtyNg;
   private final String equipmentName;
   private final String createdAt;
+  private final Long equipmentId;
 
-  public ProdResultItem(
-      long resultId,
-      String workDate,
-      String itemCode,
-      String qtyGood,
-      String qtyNg,
-      String equipmentName,
-      String createdAt
-  ) {
+  public ProdResultItem(long resultId, String workDate, String itemCode, String qtyGood, String qtyNg,
+      String equipmentName, String createdAt) {
+    this(resultId, workDate, itemCode, qtyGood, qtyNg, equipmentName, createdAt, null);
+  }
+
+  public ProdResultItem(long resultId, String workDate, String itemCode, String qtyGood, String qtyNg,
+      String equipmentName, String createdAt, Long equipmentId) {
     this.resultId = resultId;
     this.workDate = workDate;
     this.itemCode = itemCode;
@@ -26,6 +25,7 @@ public class ProdResultItem {
     this.qtyNg = qtyNg;
     this.equipmentName = equipmentName;
     this.createdAt = createdAt;
+    this.equipmentId = equipmentId;
   }
 
   public long getResultId() {
@@ -54,5 +54,9 @@ public class ProdResultItem {
 
   public String getCreatedAt() {
     return createdAt;
+  }
+
+  public Long getEquipmentId() {
+    return equipmentId;
   }
 }

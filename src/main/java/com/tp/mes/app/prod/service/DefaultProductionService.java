@@ -94,6 +94,18 @@ public class DefaultProductionService implements ProductionService {
   }
 
   @Override
+  public ProdResultItem getResult(long resultId) {
+    return repository.getResult(resultId);
+  }
+
+  @Override
+  @Transactional
+  public boolean updateResult(long resultId, String workDate, String itemCode, String qtyGood, String qtyNg,
+      Long equipmentId, Long updatedBy) {
+    return repository.updateResult(resultId, s(workDate), s(itemCode), s(qtyGood), s(qtyNg), equipmentId, updatedBy);
+  }
+
+  @Override
   public List<QtyStatRow> dailyStatsLast14Days() {
     return repository.dailyStatsLast14Days();
   }

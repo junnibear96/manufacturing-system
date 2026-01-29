@@ -10,7 +10,19 @@
             <nav class="main-nav">
                 <a href="/hr/employees" class="nav-link"><spring:message code="app.header.hr" text="인사관리"/></a>
                 <a href="/factory" class="nav-link"><spring:message code="app.header.factory" text="공장관리"/></a>
-                <a href="/production/dashboard" class="nav-link"><spring:message code="app.header.production" text="생산현황"/></a>
+                
+                <!-- Production Dropdown -->
+                <div class="nav-item-dropdown">
+                    <a href="#" class="nav-link"><spring:message code="app.header.production" text="생산관리"/> ▾</a>
+                    <div class="dropdown-menu">
+                        <a href="/production/manager-dashboard" class="dropdown-item">📊 대시보드</a>
+                        <a href="/production/plans" class="dropdown-item">📋 생산 계획</a>
+                        <a href="/production/results" class="dropdown-item">📦 생산 실적</a>
+                        <a href="/production/processes" class="dropdown-item">⚙️ 공정 관리</a>
+                        <a href="/production/stats" class="dropdown-item">📈 생산 통계</a>
+                    </div>
+                </div>
+
                 <a href="/inventory" class="nav-link"><spring:message code="app.header.inventory" text="재고현황"/></a>
             </nav>
         </div>
@@ -35,7 +47,14 @@
     <nav class="mobile-nav" id="mobileNav">
         <a href="/hr/employees" class="mobile-nav-link"><spring:message code="app.header.hr" text="인사관리"/></a>
         <a href="/factory" class="mobile-nav-link"><spring:message code="app.header.factory" text="공장관리"/></a>
-        <a href="/production/dashboard" class="mobile-nav-link"><spring:message code="app.header.production" text="생산현황"/></a>
+        <div class="mobile-nav-group">
+            <div class="mobile-nav-header"><spring:message code="app.header.production" text="생산관리"/></div>
+            <a href="/production/manager-dashboard" class="mobile-nav-link sub-link">📊 대시보드</a>
+            <a href="/production/plans" class="mobile-nav-link sub-link">📋 생산 계획</a>
+            <a href="/production/results" class="mobile-nav-link sub-link">📦 생산 실적</a>
+            <a href="/production/processes" class="mobile-nav-link sub-link">⚙️ 공정 관리</a>
+            <a href="/production/stats" class="mobile-nav-link sub-link">📈 생산 통계</a>
+        </div>
         <a href="/inventory" class="mobile-nav-link"><spring:message code="app.header.inventory" text="재고현황"/></a>
     </nav>
 </header>
@@ -84,6 +103,7 @@
 .main-nav {
     display: flex;
     gap: 8px;
+    align-items: center;
 }
 
 .nav-link {
@@ -94,6 +114,8 @@
     font-weight: 500;
     font-size: 14px;
     transition: all 0.3s;
+    display: flex;
+    align-items: center;
 }
 
 .nav-link:hover {
@@ -105,6 +127,52 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Dropdown Menu Styles */
+.nav-item-dropdown {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 200px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 8px 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+    z-index: 200;
+}
+
+.nav-item-dropdown:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown-item {
+    display: block;
+    padding: 10px 20px;
+    color: #4a5568;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.dropdown-item:hover {
+    background: #f7fafc;
+    color: #667eea;
 }
 
 .header-right {
@@ -197,7 +265,8 @@
 }
 
 .mobile-nav.active {
-    max-height: 300px;
+    max-height: 400px;
+    overflow-y: auto;
 }
 
 .mobile-nav-link {
@@ -214,6 +283,20 @@
     background: #f7fafc;
     color: #667eea;
     padding-left: 32px;
+}
+
+.mobile-nav-header {
+    padding: 16px 24px 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #a0aec0;
+    text-transform: uppercase;
+}
+
+.mobile-nav-link.sub-link {
+    padding: 12px 24px 12px 40px;
+    font-size: 13px;
+    color: #718096;
 }
 
 @media (max-width: 768px) {

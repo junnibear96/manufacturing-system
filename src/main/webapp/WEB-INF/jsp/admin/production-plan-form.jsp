@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
   <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
       <!doctype html>
@@ -8,7 +8,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>
-          <spring:message code="admin.production.plan.form" text="생산 계획 등록" /> - TP MES
+          <spring:message code="admin.production.plan.form" text="생산 계획 등록" /> 
         </title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/styles.css" />
       </head>

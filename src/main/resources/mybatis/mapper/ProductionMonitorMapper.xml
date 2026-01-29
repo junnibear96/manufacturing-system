@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tp.mes.app.prod.mapper.ProductionMonitorMapper">
+
+    <!-- ==================== Result Maps ==================== -->
+    
+    <!-- ProductionPlan Result Map -->
+    <resultMap id="ProductionPlanResultMap" type="com.tp.mes.app.prod.model.ProductionPlan">
+        <id property="planId" column="plan_id"/>
+        <result property="lineId" column="line_id"/>
+        <result property="planDate" column="plan_date"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="qtyPlan" column="qty_plan"/>
+        <result property="targetQuantity" column="target_quantity"/>
+        <result property="priorityLevel" column="priority_level"/>
+        <result property="status" column="status" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result property="assignedWorkerCount" column="assigned_worker_count"/>
+        <result property="createdBy" column="created_by"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- ProductionResultSummary Result Map -->
+    <resultMap id="ProductionResultSummaryMap" type="com.tp.mes.app.prod.model.ProductionResultSummary">
+        <result property="totalGood" column="total_good"/>
+        <result property="totalNg" column="total_ng"/>
+        <result property="totalProduced" column="total_produced"/>
+    </resultMap>
+
+    <!-- ProductionBom Result Map (재사용 - ProductionBomMapper와 동일) -->
+    <resultMap id="ProductionBomResultMap" type="com.tp.mes.app.prod.model.ProductionBom">
+        <id property="bomId" column="bom_id"/>
+        <result property="lineId" column="line_id"/>
+        <result property="inventoryId" column="inventory_id"/>
+        <result property="consumptionRate" column="consumption_rate"/>
+        <result property="unit" column="unit"/>
+        <result property="notes" column="notes"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <!-- Joined fields -->
+        <result property="lineName" column="line_name"/>
+        <result property="itemCode" column="item_code"/>
+        <result property="itemName" column="item_name"/>
+    </resultMap>
+
+    <!-- ==================== Queries ==================== -->
+
+    <!-- 활성 생산 계획 조회 -->
+    <select id="findActivePlanByLineId" resultMap="ProductionPlanResultMap">
+        SELECT 
+            p.plan_id,
+            p.line_id,
+            p.plan_date,
+            p.item_code,
+            p.qty_plan,
+            p.target_quantity,
+            p.priority_level,
+            p.status,
+            p.assigned_worker_count,
+            p.created_by,
+            p.created_at,
+            p.updated_at
+        FROM production_plan p
+        WHERE p.line_id = #{lineId,jdbcType=VARCHAR}
+          AND (
+              p.status = 'IN_PROGRESS'  -- 진행 중인 계획
+              OR (
+                  p.plan_date = TRUNC(SYSDATE)  -- 오늘 날짜
+                  AND p.status IN ('SCHEDULED', 'PENDING')  -- 예정/대기 상태
+              )
+          )
+        ORDER BY 
+            CASE WHEN p.status = 'IN_PROGRESS' THEN 0 ELSE 1 END,  -- IN_PROGRESS 우선
+            p.priority_level ASC,  -- 우선순위 낮은 숫자가 높음
+            p.created_at DESC  -- 최신 생성 순
+        FETCH FIRST 1 ROWS ONLY
+    </select>
+
+    <!-- 생산 실적 집계 -->
+    <select id="sumResultsByPlanId" resultMap="ProductionResultSummaryMap">
+        SELECT 
+            COALESCE(SUM(NVL(qty_good, 0)), 0) as total_good,
+            COALESCE(SUM(NVL(qty_ng, 0)), 0) as total_ng,
+            COALESCE(SUM(NVL(qty_good, 0) + NVL(qty_ng, 0)), 0) as total_produced
+        FROM production_result
+        WHERE plan_id = #{planId,jdbcType=NUMERIC}
+    </select>
+
+    <!-- 활성 BOM 목록 조회 (재고 정보 포함) -->
+    <select id="findActiveBomWithInventory" resultMap="ProductionBomResultMap">
+        SELECT 
+            b.bom_id,
+            b.line_id,
+            b.inventory_id,
+            b.consumption_rate,
+            b.unit,
+            b.notes,
+            b.is_active,
+            b.created_at,
+            b.updated_at,
+            l.line_name,
+            i.item_code,
+            i.item_name
+        FROM tp_production_bom b
+        LEFT JOIN production_line l ON b.line_id = l.line_id
+        INNER JOIN tp_inventory i ON b.inventory_id = i.inventory_id
+        WHERE b.line_id = #{lineId,jdbcType=VARCHAR}
+          AND b.is_active = 'Y'
+        ORDER BY i.item_code
+    </select>
+
+    <!-- 공장 ID로 라인 ID 목록 조회 -->
+    <select id="findLineIdsByFactoryId" resultType="string">
+        SELECT line_id
+        FROM production_line
+        WHERE factory_id = #{factoryId,jdbcType=VARCHAR}
+          AND status != 'INACTIVE'
+        ORDER BY line_code
+    </select>
+
+</mapper>

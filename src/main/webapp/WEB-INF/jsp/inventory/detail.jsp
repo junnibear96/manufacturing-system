@@ -1,4 +1,4 @@
-<%@ page pageEncoding="UTF-8" %>
+﻿<%@ page pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
             <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -9,7 +9,7 @@
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>${item.itemName} -
-                        <spring:message code="inventory.detail.title" text="재고 상세" /> - TP MES
+                        <spring:message code="inventory.detail.title" text="재고 상세" /> 
                     </title>
                     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
                     <script src="/assets/js/common-api.js"></script>

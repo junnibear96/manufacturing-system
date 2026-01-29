@@ -235,6 +235,49 @@ public class JdbcProductionRepository implements ProductionRepository {
   }
 
   @Override
+  public ProdResultItem getResult(long resultId) {
+    try {
+      return jdbcTemplate.queryForObject(
+          "select r.result_id, to_char(r.work_date, 'YYYY-MM-DD') as work_date, r.item_code, "
+              + "to_char(r.qty_good) as qty_good, to_char(r.qty_ng) as qty_ng, "
+              + "e.equipment_name, to_char(r.created_at, 'YYYY-MM-DD HH24:MI') as created_at, r.equipment_id "
+              + "from production_result r left join equipment e on e.equipment_id = r.equipment_id "
+              + "where r.result_id = ?",
+          (rs, rowNum) -> new ProdResultItem(
+              rs.getLong("result_id"),
+              rs.getString("work_date"),
+              rs.getString("item_code"),
+              rs.getString("qty_good"),
+              rs.getString("qty_ng"),
+              rs.getString("equipment_name"),
+              rs.getString("created_at"),
+              rs.getLong("equipment_id")),
+          resultId);
+    } catch (DataAccessException ex) {
+      if (OracleErrorSupport.isMissingTableOrView(ex)) {
+        return null;
+      }
+      throw ex;
+    }
+  }
+
+  @Override
+  public boolean updateResult(long resultId, String workDate, String itemCode, String qtyGood, String qtyNg,
+      Long equipmentId, Long updatedBy) {
+    try {
+      return jdbcTemplate.update(
+          "update production_result set work_date = TO_DATE(?, 'YYYY-MM-DD'), item_code = ?, qty_good = ?, qty_ng = ?, equipment_id = ? "
+              + "where result_id = ?",
+          workDate, itemCode, qtyGood, qtyNg, equipmentId, resultId) == 1;
+    } catch (DataAccessException ex) {
+      if (OracleErrorSupport.isMissingTableOrView(ex)) {
+        return false;
+      }
+      throw ex;
+    }
+  }
+
+  @Override
   public List<QtyStatRow> dailyStatsLast14Days() {
     try {
       return jdbcTemplate.query(

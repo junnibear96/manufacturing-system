@@ -1,4 +1,4 @@
-<%@ page pageEncoding="UTF-8" %>
+﻿<%@ page pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
             <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -9,7 +9,7 @@
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>
-                        <spring:message code="dashboard.title" /> - TP MES
+                        <spring:message code="dashboard.title" /> 
                     </title>
                     <style>
                         * {
@@ -317,7 +317,7 @@
 
                 <body>
                     <div class="header">
-                        <h1>TP Manufacturing System</h1>
+                        <h1>Manufacturing Execution System</h1>
                         <div class="user-info">
                             <span class="user-name">${not empty userName ? userName : '
                                 <spring:message code="dashboard.user.default" />'}님

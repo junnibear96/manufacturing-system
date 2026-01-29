@@ -1,4 +1,4 @@
-<%@ page pageEncoding="UTF-8" %>
+﻿<%@ page pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
             <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -9,7 +9,7 @@
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>
-                        <spring:message code="inventory.dashboard.title" text="재고 관리 대시보드 - TP MES" />
+                        <spring:message code="inventory.dashboard.title" text="재고 관리 대시보드 " />
                     </title>
                     <link rel="stylesheet" href="/assets/css/common.css">
                     <style>

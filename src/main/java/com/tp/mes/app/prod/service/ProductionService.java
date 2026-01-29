@@ -29,6 +29,11 @@ public interface ProductionService {
 
   boolean deleteResult(long resultId);
 
+  ProdResultItem getResult(long resultId);
+
+  boolean updateResult(long resultId, String workDate, String itemCode, String qtyGood, String qtyNg, Long equipmentId,
+      Long updatedBy);
+
   List<QtyStatRow> dailyStatsLast14Days();
 
   List<QtyStatRow> monthlyStatsThisYear();

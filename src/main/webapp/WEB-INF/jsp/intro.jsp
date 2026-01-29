@@ -7,7 +7,7 @@
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>TP · Intro</title>
+        <title>Manufacturing System · Intro</title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/styles.css" />
         <style>
           /* Mobile Menu Overlay */
@@ -197,7 +197,7 @@
 
         <header class="landing-top" role="banner">
           <div class="landing-top-inner">
-            <a class="landing-logo" href="${pageContext.request.contextPath}/app/home" aria-label="TP Home">TP</a>
+            <a class="landing-logo" href="${pageContext.request.contextPath}/app/home" aria-label="MES Home">MES</a>
             <nav class="landing-actions" aria-label="Language and menu">
               <a class="landing-action" href="#" aria-disabled="true">KOR</a>
               <span class="landing-sep" aria-hidden="true">·</span>
@@ -328,7 +328,7 @@
               <spring:message code="intro.title" text="현장을 위한 실행 가능한 시스템" />
             </h1>
             <p class="landing-sub">
-              <spring:message code="intro.subtitle" text="Your Trusted Partner · TP" />
+              <spring:message code="intro.subtitle" text="Manufacturing Execution System" />
             </p>
             <p class="small" style="margin-top:18px;">
               <spring:message code="app.login.serverTime" arguments="${now}" text="서버 시간: ${now}" />
@@ -355,24 +355,25 @@
             </div>
           </section>
 
-          <section class="landing-bottom" aria-label="Brands">
-            <div class="brand-strip" role="list">
-              <div class="brand-item" role="listitem"><span class="dot" aria-hidden="true"></span><span>TP</span></div>
-              <div class="brand-item" role="listitem"><span class="dot" aria-hidden="true"></span><span>TP Nadia</span>
-              </div>
-              <div class="brand-item" role="listitem"><span class="dot" aria-hidden="true"></span><span>EO</span></div>
-              <div class="brand-item" role="listitem"><span class="dot" aria-hidden="true"></span><span>TP Living</span>
-              </div>
-              <div class="brand-item" role="listitem"><span class="dot" aria-hidden="true"></span><span>TP
-                  F&amp;B</span></div>
-              <div class="brand-item" role="listitem"><span class="dot" aria-hidden="true"></span><span>TP Square</span>
-              </div>
+          <div class="brand-strip" role="list">
+            <div class="brand-item" role="listitem"><span class="dot"
+                aria-hidden="true"></span><span>Manufacturing</span></div>
+            <div class="brand-item" role="listitem"><span class="dot" aria-hidden="true"></span><span>Production</span>
             </div>
+            <div class="brand-item" role="listitem"><span class="dot" aria-hidden="true"></span><span>Quality</span>
+            </div>
+            <div class="brand-item" role="listitem"><span class="dot" aria-hidden="true"></span><span>Inventory</span>
+            </div>
+            <div class="brand-item" role="listitem"><span class="dot" aria-hidden="true"></span><span>Equipment</span>
+            </div>
+            <div class="brand-item" role="listitem"><span class="dot" aria-hidden="true"></span><span>Analytics</span>
+            </div>
+          </div>
           </section>
         </main>
 
         <script>
-          // Mobile Menu Toggle with TP Inc Style
+          // Mobile Menu Toggle
           document.addEventListener('DOMContentLoaded', function () {
             const menuButton = document.getElementById('mobileMenuButton');
             const menuPanel = document.getElementById('mobileMenuPanel');

@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
   <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
       <!doctype html>
@@ -8,7 +8,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>
-          <spring:message code="admin.production.result.form" text="생산 실적 등록" /> - TP MES
+          <spring:message code="admin.production.result.form" text="생산 실적 등록" />
         </title>
         <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/styles.css" />
       </head>
@@ -21,17 +21,30 @@
                 <div class="card card-strong">
                   <div class="kicker"><span class="badge">Admin</span><span class="small">production_result</span></div>
                   <h1>
-                    <spring:message code="admin.production.result.form" text="생산 실적 등록" />
+                    <c:choose>
+                      <c:when test="${mode == 'edit'}">
+                        <spring:message code="admin.production.result.edit" text="생산 실적 수정" />
+                      </c:when>
+                      <c:otherwise>
+                        <spring:message code="admin.production.result.form" text="생산 실적 등록" />
+                      </c:otherwise>
+                    </c:choose>
                   </h1>
 
-                  <form method="post" action="${pageContext.request.contextPath}/admin/production/results/new">
+                  <c:set var="actionUrl" value="${pageContext.request.contextPath}/admin/production/results/new" />
+                  <c:if test="${mode == 'edit'}">
+                    <c:set var="actionUrl"
+                      value="${pageContext.request.contextPath}/admin/production/results/${resultId}/edit" />
+                  </c:if>
+
+                  <form method="post" action="${actionUrl}">
                     <div style="display:grid; gap:10px;">
                       <label>
                         <div class="small">
                           <spring:message code="production.results.date" text="Work Date (YYYY-MM-DD)" />
                         </div>
-                        <input name="workDate" value="<c:out value='${workDate}' />" style="width:100%; padding:10px;"
-                          required />
+                        <input type="date" name="workDate" value="<c:out value='${workDate}' />"
+                          style="width:100%; padding:10px;" required />
                       </label>
                       <label>
                         <div class="small">
@@ -44,15 +57,15 @@
                         <div class="small">
                           <spring:message code="production.results.good" text="Qty Good" />
                         </div>
-                        <input name="qtyGood" value="<c:out value='${qtyGood}' />" style="width:100%; padding:10px;"
-                          required />
+                        <input type="number" name="qtyGood" value="<c:out value='${qtyGood}' />"
+                          style="width:100%; padding:10px;" required />
                       </label>
                       <label>
                         <div class="small">
                           <spring:message code="production.results.ng" text="Qty NG" />
                         </div>
-                        <input name="qtyNg" value="<c:out value='${qtyNg}' />" style="width:100%; padding:10px;"
-                          required />
+                        <input type="number" name="qtyNg" value="<c:out value='${qtyNg}' />"
+                          style="width:100%; padding:10px;" required />
                       </label>
                       <label>
                         <div class="small">
@@ -63,7 +76,8 @@
                             <spring:message code="common.none" text="(none)" />
                           </option>
                           <c:forEach items="${equipmentList}" var="e">
-                            <option value="${e.equipmentId}">
+                            <option value="${e.equipmentId}" <c:if test="${e.equipmentId == equipmentId}">selected
+                              </c:if>>
                               <c:out value="${e.equipmentCode}" /> ·
                               <c:out value="${e.equipmentName}" />
                             </option>
@@ -76,7 +90,7 @@
                       <button class="btn" type="submit">
                         <spring:message code="common.save" text="Save" />
                       </button>
-                      <a class="btn" href="${pageContext.request.contextPath}/app/production/results"
+                      <a class="btn" href="${pageContext.request.contextPath}/production/results"
                         style="text-decoration:none;">
                         <spring:message code="common.cancel" text="Cancel" />
                       </a>

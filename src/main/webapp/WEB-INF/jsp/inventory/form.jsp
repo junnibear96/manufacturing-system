@@ -1,4 +1,4 @@
-<%@ page pageEncoding="UTF-8" %>
+﻿<%@ page pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
             <!DOCTYPE html>
@@ -8,7 +8,7 @@
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>
-                    <spring:message code="inventory.form.title" text="재고 등록 - TP MES" />
+                    <spring:message code="inventory.form.title" text="재고 등록 " />
                 </title>
                 <style>
                     body {

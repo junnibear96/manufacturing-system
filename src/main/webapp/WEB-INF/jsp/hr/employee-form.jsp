@@ -1,4 +1,4 @@
-<%@ page pageEncoding="UTF-8" %>
+﻿<%@ page pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
             <!DOCTYPE html>
@@ -13,7 +13,7 @@
                     </c:if>
                     <c:if test="${mode == 'edit'}">
                         <spring:message code="hr.employee.form.edit" text="사원 정보 수정" />
-                    </c:if> - TP MES
+                    </c:if> 
                 </title>
                 <style>
                     * {
