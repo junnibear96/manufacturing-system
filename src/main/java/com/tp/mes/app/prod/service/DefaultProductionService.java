@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
 public class DefaultProductionService implements ProductionService {
 
   private final ProductionRepository repository;
-  private final com.tp.mes.app.inventory.service.MaterialUsageService materialUsageService;
+  private final com.tp.mes.app.inventory.service.InventoryService inventoryService;
 
   public DefaultProductionService(ProductionRepository repository,
-      com.tp.mes.app.inventory.service.MaterialUsageService materialUsageService) {
+      com.tp.mes.app.inventory.service.InventoryService inventoryService) {
     this.repository = repository;
-    this.materialUsageService = materialUsageService;
+    this.inventoryService = inventoryService;
   }
 
   @Override
@@ -76,14 +76,8 @@ public class DefaultProductionService implements ProductionService {
       Long createdBy) {
     long resultId = repository.insertResult(s(workDate), s(itemCode), s(qtyGood), s(qtyNg), equipmentId, createdBy);
 
-    // Trigger Material Deduction
-    try {
-      materialUsageService.deductMaterialsForProduction(s(itemCode), new java.math.BigDecimal(s(qtyGood)));
-    } catch (Exception e) {
-      // Log but don't fail the result creation
-      org.slf4j.LoggerFactory.getLogger(DefaultProductionService.class)
-          .warn("Material deduction failed for resultId {}: {}", resultId, e.getMessage());
-    }
+    // Trigger Material Deduction (Atomic with Transaction)
+    inventoryService.deductMaterialBasedOnBOM(s(itemCode), new java.math.BigDecimal(s(qtyGood)));
 
     return resultId;
   }

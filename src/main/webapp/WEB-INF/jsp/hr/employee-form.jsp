@@ -13,7 +13,7 @@
                     </c:if>
                     <c:if test="${mode == 'edit'}">
                         <spring:message code="hr.employee.form.edit" text="사원 정보 수정" />
-                    </c:if> 
+                    </c:if>
                 </title>
                 <style>
                     * {

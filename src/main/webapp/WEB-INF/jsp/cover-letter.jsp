@@ -520,38 +520,6 @@
                         </div>
                     </div>
 
-                    <!-- Cover Letter Section -->
-                    <div class="cl-section" data-aos="fade-up">
-                        <h2>
-                            <spring:message code="coverletter.section.self_intro" />
-                        </h2>
-                        <div class="cover-letter-text">
-                            <p>
-                                <spring:message code="coverletter.intro.greeting" />
-                            </p>
-
-                            <p>
-                                <spring:message code="coverletter.intro.p1" />
-                            </p>
-
-                            <p>
-                                <spring:message code="coverletter.intro.p2" />
-                            </p>
-
-                            <p>
-                                <spring:message code="coverletter.intro.p3" />
-                            </p>
-
-                            <p>
-                                <spring:message code="coverletter.intro.p4" />
-                            </p>
-
-                            <p>
-                                <spring:message code="coverletter.intro.p5" />
-                            </p>
-                        </div>
-                    </div>
-
                     <!-- Certifications & Languages -->
                     <div class="cl-section" data-aos="fade-up">
                         <h2>

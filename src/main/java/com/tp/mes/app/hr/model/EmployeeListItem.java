@@ -28,4 +28,8 @@ public class EmployeeListItem {
 
         // 생산 라인 정보
         private String productionLineId;
+
+        public String getProductionLineId() {
+                return productionLineId;
+        }
 }

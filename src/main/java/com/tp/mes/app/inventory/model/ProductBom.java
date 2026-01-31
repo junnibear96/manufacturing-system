@@ -19,4 +19,5 @@ public class ProductBom {
     // Transient fields
     private String materialName;
     private String materialCode;
+
 }
