@@ -24,7 +24,7 @@ public class JdbcNoticeRepository implements NoticeRepository {
   public JdbcNoticeRepository(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
     this.insert = new SimpleJdbcInsert(jdbcTemplate)
-        .withTableName("notice")
+        .withTableName("tp_notice")
         .usingGeneratedKeyColumns("notice_id");
   }
 
@@ -33,7 +33,7 @@ public class JdbcNoticeRepository implements NoticeRepository {
     try {
       return jdbcTemplate.query(
           "select notice_id, title, body, to_char(created_at, 'YYYY-MM-DD HH24:MI') as created_at "
-              + "from notice order by notice_id desc",
+              + "from tp_notice order by notice_id desc",
           (rs, rowNum) -> new Notice(
               rs.getLong("notice_id"),
               rs.getString("title"),
@@ -53,7 +53,7 @@ public class JdbcNoticeRepository implements NoticeRepository {
     try {
       List<Notice> items = jdbcTemplate.query(
           "select notice_id, title, body, to_char(created_at, 'YYYY-MM-DD HH24:MI') as created_at "
-              + "from notice where notice_id = ?",
+              + "from tp_notice where notice_id = ?",
           (rs, rowNum) -> new Notice(
               rs.getLong("notice_id"),
               rs.getString("title"),
@@ -93,7 +93,7 @@ public class JdbcNoticeRepository implements NoticeRepository {
   public void updateNotice(long noticeId, String title, String body, Long updatedByUserId) {
     try {
       jdbcTemplate.update(
-          "update notice set title = ?, body = ? where notice_id = ?",
+          "update tp_notice set title = ?, body = ? where notice_id = ?",
           title, body, noticeId);
     } catch (DataAccessException ex) {
       if (OracleErrorSupport.isMissingTableOrView(ex)) {
